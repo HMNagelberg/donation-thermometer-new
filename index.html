@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Thermometer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="thermometer-container">
+            <h1 class="title">Fundraising Progress</h1>
+            <div class="goal-amount">Goal: $1,000,000</div>
+            <div class="thermometer">
+                <div class="thermometer-track">
+                    <div id="thermometer-progress" class="thermometer-progress"></div>
+                </div>
+                <div class="thermometer-markers">
+                    <div class="marker" style="bottom: 0%">$0</div>
+                    <div class="marker" style="bottom: 25%">$250,000</div>
+                    <div class="marker" style="bottom: 50%">$500,000</div>
+                    <div class="marker" style="bottom: 75%">$750,000</div>
+                    <div class="marker" style="bottom: 100%">$1,000,000</div>
+                </div>
+            </div>
+            <div id="current-amount" class="current-amount">Loading...</div>
+            <div id="donor-count" class="donor-count">Loading...</div>
+        </div>
+        <div class="qr-container">
+            <img src="qr-code.png" alt="Donation QR Code" class="qr-code">
+            <div class="qr-text">Scan to Donate</div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
