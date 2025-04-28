@@ -8,14 +8,44 @@ const thermometerProgress = document.getElementById('thermometer-progress');
 const currentAmountElement = document.getElementById('current-amount');
 const donorCountElement = document.getElementById('donor-count');
 
+// Store previous valid values
+let lastValidTotal = 0;
+let lastValidDonorCount = 0;
+
 // Function to fetch and process CSV data
 async function fetchDonationData() {
     try {
-        const response = await fetch(CSV_URL);
+        const response = await fetch(CSV_URL + '&_=' + new Date().getTime(), {
+            method: 'GET',
+            cache: 'no-store', // Prevent caching
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+        
         const csvData = await response.text();
+        
+        // Validate that we have actual CSV data
+        if (!csvData || csvData.trim() === '') {
+            console.error('Empty CSV data received');
+            updateDisplay(lastValidTotal, lastValidDonorCount);
+            return;
+        }
         
         // Parse CSV data
         const rows = csvData.split('\n').filter(row => row.trim() !== '');
+        
+        // Validate that we have at least a header row
+        if (rows.length === 0) {
+            console.error('No rows found in CSV');
+            updateDisplay(lastValidTotal, lastValidDonorCount);
+            return;
+        }
+        
         const headers = rows[0].split(',');
         
         // Find column indices
@@ -26,11 +56,14 @@ async function fetchDonationData() {
         
         if (amountIndex === -1) {
             console.error('Could not find amount column in CSV');
+            updateDisplay(lastValidTotal, lastValidDonorCount);
             return;
         }
         
         // Calculate total amount from all donations (excluding header row)
         let totalAmount = 0;
+        const donorCount = rows.length - 1;
+        
         for (let i = 1; i < rows.length; i++) {
             const columns = rows[i].split(',');
             if (columns.length > amountIndex) {
@@ -43,41 +76,63 @@ async function fetchDonationData() {
             }
         }
         
-        // Calculate percentage of goal reached
-        const percentage = Math.min((totalAmount / GOAL_AMOUNT) * 100, 100);
+        // Validate total (ensure it's not less than previous valid total)
+        if (donorCount < lastValidDonorCount || totalAmount < lastValidTotal) {
+            console.warn('New total is less than previous valid total. Possible data issue. Keeping previous values.');
+            updateDisplay(lastValidTotal, lastValidDonorCount);
+            return;
+        }
         
-        // Update thermometer
-        thermometerProgress.style.height = `${percentage}%`;
+        // Update stored valid values
+        lastValidTotal = totalAmount;
+        lastValidDonorCount = donorCount;
         
-        // Format as currency
-        const formattedAmount = totalAmount.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            maximumFractionDigits: 0
-        });
+        // Update display
+        updateDisplay(totalAmount, donorCount);
         
-        // Update text
-        currentAmountElement.textContent = `${formattedAmount} raised`;
-        donorCountElement.textContent = `${rows.length - 1} donations`;
+        console.log(`Data refreshed. Total: ${formatCurrency(totalAmount)}, Donors: ${donorCount}, Percentage: ${calculatePercentage(totalAmount).toFixed(2)}%`);
         
-        // Add animation class when updating
+    } catch (error) {
+        console.error('Error fetching donation data:', error);
+        // On error, maintain the last valid values
+        updateDisplay(lastValidTotal, lastValidDonorCount);
+    }
+}
+
+// Helper function to calculate percentage
+function calculatePercentage(amount) {
+    return Math.min((amount / GOAL_AMOUNT) * 100, 100);
+}
+
+// Helper function to format currency
+function formatCurrency(amount) {
+    return amount.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0
+    });
+}
+
+// Helper function to update the display
+function updateDisplay(amount, donorCount) {
+    // Calculate percentage
+    const percentage = calculatePercentage(amount);
+    
+    // Update thermometer with animation only if value increased
+    if (parseFloat(thermometerProgress.style.height) < percentage) {
         thermometerProgress.classList.add('pulse');
         setTimeout(() => {
             thermometerProgress.classList.remove('pulse');
         }, 1000);
-        
-        console.log(`Data refreshed. Total: ${formattedAmount}, Percentage: ${percentage.toFixed(2)}%`);
-        
-    } catch (error) {
-        console.error('Error fetching donation data:', error);
     }
+    
+    // Update thermometer height
+    thermometerProgress.style.height = `${percentage}%`;
+    
+    // Update text
+    currentAmountElement.textContent = `${formatCurrency(amount)} raised`;
+    donorCountElement.textContent = `${donorCount} donations`;
 }
-
-// Fetch data immediately on load
-fetchDonationData();
-
-// Set up periodic refresh
-setInterval(fetchDonationData, REFRESH_INTERVAL);
 
 // Add a little animation for when new donations come in
 function addPulseAnimation() {
@@ -96,4 +151,11 @@ function addPulseAnimation() {
     document.head.appendChild(style);
 }
 
+// Initial setup
 addPulseAnimation();
+
+// Fetch data immediately on load
+fetchDonationData();
+
+// Set up periodic refresh
+setInterval(fetchDonationData, REFRESH_INTERVAL);
