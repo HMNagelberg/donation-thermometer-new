@@ -1,5 +1,5 @@
 /* 
-   PreAct Donation Thermometer Styles - Fixed Version
+   PreAct Donation Thermometer Styles - Modified Version
    For fundraising event display
 */
 
@@ -12,7 +12,7 @@
 :root {
     --primary-blue: #1A365D;
     --secondary-blue: #20BDBE;
-    --accent-pink: #FF69B4;   /* Pink color as requested */
+    --accent-pink: #FF69B4;
     --light-bg: #EAF6FF;
     --text-dark: #333;
     --text-light: #666;
@@ -37,11 +37,10 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Header */
 .header {
-    background-color: var(--primary-blue);
-    color: var(--white);
-    padding: 1rem 0;
+    background-color: var(--white);
     width: 100%;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    padding: 1.5rem 0;
 }
 
 .header-content {
@@ -58,33 +57,34 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
     align-items: center;
     gap: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .logo {
-    height: 60px;
+    height: 70px;
     width: auto;
     object-fit: contain;
 }
 
 .preact-logo {
-    height: 70px; /* Slightly larger for emphasis */
+    height: 80px; /* Slightly larger for emphasis */
 }
 
 .header h1 {
-    font-size: 2rem;
+    font-size: 2.5rem;
     text-align: center;
     font-weight: 800;
     letter-spacing: 0.5px;
+    color: var(--primary-blue);
 }
 
-/* Hero Banner with QR Codes */
+/* Hero Banner */
 .hero-banner {
     background-image: linear-gradient(135deg, rgba(26, 54, 93, 0.85), rgba(32, 189, 190, 0.85));
-    height: 200px;
+    height: 220px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     position: relative;
     overflow: hidden;
     padding: 0 2rem;
@@ -107,40 +107,10 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 2;
     text-align: center;
     color: var(--white);
-    flex: 1;
-}
-
-.qr-code-left, .qr-code-right {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    animation: pulse 2s infinite alternate;
-}
-
-.qr-code {
-    width: 120px;
-    height: 120px;
-    border: 3px solid var(--white);
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-    background-color: white;
-}
-
-.qr-code-left p, .qr-code-right p {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    color: var(--accent-pink);
-    font-size: 1rem;
 }
 
 .tagline {
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
@@ -151,7 +121,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-description {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: 400;
     max-width: 600px;
     margin: 0 auto;
@@ -167,6 +137,36 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 2rem;
 }
 
+/* QR Code Container */
+.qr-code-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.qr-code-left, .qr-code-right {
+    width: 180px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    animation: pulse 2s infinite alternate;
+    margin-top: 100px;
+}
+
+.qr-code {
+    width: 150px;
+    height: 150px;
+    border: 3px solid var(--white);
+    border-radius: 8px;
+    background-color: white;
+}
+
 /* Thermometer Section */
 .thermometer-container {
     background-color: var(--white);
@@ -175,6 +175,8 @@ h1, h2, h3, h4, h5, h6 {
     padding: 2rem;
     display: flex;
     flex-direction: column;
+    flex: 1;
+    margin: 0 2rem;
 }
 
 .goal-heading {
@@ -183,7 +185,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .goal-title {
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: var(--primary-blue);
 }
 
@@ -194,12 +196,14 @@ h1, h2, h3, h4, h5, h6 {
 .goal-description {
     color: var(--text-light);
     margin-top: 0.5rem;
+    font-size: 1.1rem;
 }
 
 .thermometer-wrapper {
     display: flex;
+    justify-content: center;
     align-items: flex-start;
-    gap: 3rem;
+    gap: 4rem;
     margin-bottom: 2rem;
 }
 
@@ -260,25 +264,28 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .progress-stats {
-    flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    max-width: 400px;
 }
 
 .current-amount {
     font-family: 'Montserrat', sans-serif;
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 800;
     color: var(--accent-pink);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     margin-bottom: 0.5rem;
     animation: fadeIn 0.5s ease-in-out;
+    text-align: center;
 }
 
 .donor-count {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     color: var(--text-light);
     margin-bottom: 1.5rem;
+    text-align: center;
 }
 
 /* Supporters Section */
@@ -286,8 +293,8 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--light-bg);
     border-radius: 12px;
     padding: 1.5rem;
-    margin-top: 1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
 }
 
 .supporters-title {
@@ -304,57 +311,7 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
-/* Impact Section */
-.impact-section {
-    border-top: 1px solid #eee;
-    padding-top: 2rem;
-    margin-top: 2rem;
-}
-
-.impact-section h3 {
-    text-align: center;
-    color: var(--primary-blue);
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-}
-
-.impact-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-}
-
-.impact-item {
-    text-align: center;
-}
-
-.impact-icon {
-    width: 50px;
-    height: 50px;
-    background-color: var(--light-bg);
-    border-radius: 50%;
-    margin: 0 auto 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease;
-}
-
-.impact-icon:hover {
-    transform: scale(1.1);
-}
-
-.impact-img {
-    width: 30px;
-    height: 30px;
-}
-
-.impact-item p {
-    font-size: 0.9rem;
-    color: var(--text-light);
-}
-
-/* Partners Section - Now at the bottom */
+/* Partners Section */
 .partners-section {
     border-top: 1px solid #eee;
     padding-top: 2rem;
@@ -369,7 +326,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .partner-logo {
-    height: 60px;
+    height: 80px;
     width: auto;
     object-fit: contain;
     transition: var(--transition);
@@ -397,44 +354,70 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .qr-code-container {
+        margin: 0 1rem;
+    }
+    
+    .qr-code-left, .qr-code-right {
+        margin-top: 70px;
+    }
+}
+
 @media (max-width: 991px) {
     .thermometer-wrapper {
         flex-direction: column;
         align-items: center;
     }
     
-    .impact-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
     .partner-logo-container {
         flex-direction: column;
         gap: 1.5rem;
+    }
+    
+    .qr-code-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .qr-code-left, .qr-code-right {
+        margin: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .thermometer-container {
+        margin: 0;
+    }
+    
+    .qr-code-right {
+        margin-top: 1rem;
     }
 }
 
 @media (max-width: 767px) {
     .header h1 {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
+    }
+    
+    .logo {
+        height: 50px;
+    }
+    
+    .preact-logo {
+        height: 60px;
     }
     
     .hero-banner {
-        flex-direction: column;
         height: auto;
-        padding: 1.5rem;
-        gap: 1rem;
-    }
-    
-    .qr-code-left, .qr-code-right {
-        width: 100%;
-    }
-    
-    .qr-code-right {
-        display: none; /* Hide second QR on mobile */
+        padding: 2rem;
     }
     
     .tagline {
-        font-size: 2rem;
+        font-size: 2.5rem;
+    }
+    
+    .hero-description {
+        font-size: 1.2rem;
     }
     
     .current-amount {
@@ -442,20 +425,11 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .thermometer {
-        height: 250px;
-    }
-}
-
-@media (max-width: 480px) {
-    .impact-grid {
-        grid-template-columns: 1fr;
+        height: 280px;
     }
     
-    .logo {
-        height: 40px;
-    }
-    
-    .preact-logo {
-        height: 50px;
+    .qr-code {
+        width: 120px;
+        height: 120px;
     }
 }
