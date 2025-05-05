@@ -8,21 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Performance optimization scripts -->
-    <script type="text/javascript">
-        // Preconnect to Google Docs/Sheets domain to speed up initial connection
-        let link = document.createElement('link');
-        link.rel = 'preconnect';
-        link.href = 'https://docs.google.com';
-        document.head.appendChild(link);
-        
-        // Add DNS prefetch for Google Sheets
-        link = document.createElement('link');
-        link.rel = 'dns-prefetch';
-        link.href = 'https://docs.google.com';
-        document.head.appendChild(link);
-    </script>
+    <!-- Add PapaParse Library for better CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -84,11 +71,11 @@
                     </div>
                     
                     <div class="progress-stats">
-                        <div id="current-amount" class="current-amount">$120,100 raised</div>
-                        <div id="donor-count" class="donor-count">4 donations</div>
+                        <div id="current-amount" class="current-amount">$0 raised</div>
+                        <div id="donor-count" class="donor-count">0 donations</div>
                         <div class="supporters-section">
                             <h3 class="supporters-title">Thank You To Our Supporters</h3>
-                            <div id="donor-list" class="donor-list">test 1, test 2, test 3, test 4</div>
+                            <div id="donor-list" class="donor-list">Loading donors...</div>
                         </div>
                     </div>
                 </div>
@@ -110,6 +97,9 @@
         </div>
     </div>
     
+    <!-- Add PapaParse Library for better CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- Use the new script -->
     <script src="script.js"></script>
 </body>
 </html>
