@@ -1,6 +1,6 @@
 // Configuration
 const GOAL_AMOUNT = 1000000;
-const REFRESH_INTERVAL = 5000; // Back to 5 seconds to reduce potential issues
+const REFRESH_INTERVAL = 3000; // Changed to 3 seconds for quicker updates
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRvwDVAwZcxpGpU9SwIfmJS19N1z_XMx8Txw0PIKFRYbbX9Vaffdm6GKyEhXwpSHUPNObHVaScBKilf/pub?output=csv';
 
 // DOM Elements
@@ -9,13 +9,40 @@ const currentAmountElement = document.getElementById('current-amount');
 const donorCountElement = document.getElementById('donor-count');
 const donorListElement = document.getElementById('donor-list');
 
-// Store previous valid values
-let lastValidTotal = 0;
-let lastValidDonorCount = 0;
-let lastValidDonorNames = [];
+// Store persistent values and set some initial values
+let persistentValues = {
+    total: 0,
+    donorCount: 0,
+    donorNames: []
+};
+
+// Try to load any previously stored values from localStorage
+try {
+    const savedValues = localStorage.getItem('donationValues');
+    if (savedValues) {
+        persistentValues = JSON.parse(savedValues);
+        console.log('Loaded saved values:', persistentValues);
+        
+        // Immediately update the display with saved values
+        updateDisplay(persistentValues.total, persistentValues.donorCount, persistentValues.donorNames);
+    }
+} catch (e) {
+    console.error('Error loading saved values:', e);
+}
+
+// Track consecutive failures to prevent refresh loops
+let consecutiveFailures = 0;
+const MAX_FAILURES = 3;
+
+// Variable to track if we're currently fetching
+let isFetching = false;
 
 // Function to fetch and process CSV data
 function fetchDonationData() {
+    // Prevent concurrent fetches
+    if (isFetching) return;
+    isFetching = true;
+    
     console.log('Fetching donation data...');
     
     // Add random parameter to avoid caching
@@ -27,7 +54,9 @@ function fetchDonationData() {
         method: 'GET',
         cache: 'no-store',
         headers: {
-            'Cache-Control': 'no-cache'
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
         }
     })
     .then(response => {
@@ -38,16 +67,17 @@ function fetchDonationData() {
     })
     .then(csvData => {
         if (!csvData || csvData.trim() === '') {
-            console.error('Empty CSV data received');
-            return;
+            throw new Error('Empty CSV data received');
         }
+        
+        // Reset failure counter on success
+        consecutiveFailures = 0;
         
         // Parse CSV data
         const rows = csvData.split('\n').filter(row => row.trim() !== '');
         
         if (rows.length === 0) {
-            console.error('No rows found in CSV');
-            return;
+            throw new Error('No rows found in CSV');
         }
         
         const headers = rows[0].split(',');
@@ -64,9 +94,8 @@ function fetchDonationData() {
         );
         
         if (amountIndex === -1) {
-            console.error('Could not find amount column in CSV');
-            console.log('Headers found:', headers);
-            return;
+            console.warn('Could not find amount column in CSV. Headers:', headers);
+            // Don't throw error, we'll try to adapt
         }
         
         // Calculate total amount from all donations (excluding header row)
@@ -78,7 +107,7 @@ function fetchDonationData() {
             const columns = rows[i].split(',');
             
             // Process amount
-            if (columns.length > amountIndex) {
+            if (amountIndex !== -1 && columns.length > amountIndex) {
                 // Remove any non-numeric characters except decimal point
                 const amountStr = columns[amountIndex].replace(/[^\d.]/g, '');
                 const amount = parseFloat(amountStr);
@@ -96,20 +125,54 @@ function fetchDonationData() {
             }
         }
         
-        // Store valid values
-        lastValidTotal = totalAmount;
-        lastValidDonorCount = donorCount;
-        lastValidDonorNames = donorNames;
-        
-        // Update display
-        updateDisplay(totalAmount, donorCount, donorNames);
-        
-        console.log(`Data refreshed. Total: ${formatCurrency(totalAmount)}, Donors: ${donorCount}, Percentage: ${calculatePercentage(totalAmount).toFixed(2)}%`);
+        // Only update if we got valid data
+        if (donorCount > 0 && totalAmount > 0) {
+            // Update persistent values
+            persistentValues = {
+                total: totalAmount,
+                donorCount: donorCount,
+                donorNames: donorNames
+            };
+            
+            // Save to localStorage for persistence across page loads
+            try {
+                localStorage.setItem('donationValues', JSON.stringify(persistentValues));
+            } catch (e) {
+                console.error('Error saving values:', e);
+            }
+            
+            // Update display
+            updateDisplay(totalAmount, donorCount, donorNames);
+            
+            console.log(`Data refreshed. Total: ${formatCurrency(totalAmount)}, Donors: ${donorCount}, Percentage: ${calculatePercentage(totalAmount).toFixed(2)}%`);
+        } else {
+            console.warn('Invalid data received. Using persistent values.');
+            updateDisplay(persistentValues.total, persistentValues.donorCount, persistentValues.donorNames);
+        }
     })
     .catch(error => {
         console.error('Error fetching donation data:', error);
-        // On error, use last valid values
-        updateDisplay(lastValidTotal, lastValidDonorCount, lastValidDonorNames);
+        
+        // Increment failure counter
+        consecutiveFailures++;
+        
+        console.warn(`Consecutive failures: ${consecutiveFailures}/${MAX_FAILURES}`);
+        
+        // Always use persistent values on error
+        updateDisplay(persistentValues.total, persistentValues.donorCount, persistentValues.donorNames);
+        
+        // If too many consecutive failures, slow down the refresh rate temporarily
+        // But will return to normal after a successful fetch
+    })
+    .finally(() => {
+        isFetching = false;
+        
+        // Schedule the next refresh with appropriate interval based on failure count
+        const nextInterval = consecutiveFailures >= MAX_FAILURES ? 
+            REFRESH_INTERVAL * 2 : // Temporary slow down if having problems
+            REFRESH_INTERVAL;
+            
+        setTimeout(fetchDonationData, nextInterval);
     });
 }
 
@@ -132,8 +195,8 @@ function updateDisplay(amount, donorCount, donorNames) {
     // Calculate percentage
     const percentage = calculatePercentage(amount);
     
-    // Update thermometer
-    thermometerProgress.style.height = `${percentage}%`;
+    // Update thermometer with smooth animation
+    animateThermometer(percentage);
     
     // Update text
     currentAmountElement.textContent = `${formatCurrency(amount)} raised`;
@@ -147,57 +210,63 @@ function updateDisplay(amount, donorCount, donorNames) {
     }
 }
 
-// Add debugging info to the page (will be hidden from users)
-function addDebugInfo() {
+// Smooth thermometer animation
+function animateThermometer(targetPercentage) {
+    const currentHeight = parseFloat(thermometerProgress.style.height || '0');
+    
+    // Only animate if there's a significant change
+    if (Math.abs(currentHeight - targetPercentage) < 0.5) return;
+    
+    const duration = 800; // 0.8 second animation (faster than before)
+    const startTime = performance.now();
+    const startHeight = currentHeight;
+    
+    function step(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Ease out cubic: progress = 1 - Math.pow(1 - progress, 3)
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+        
+        const newHeight = startHeight + (targetPercentage - startHeight) * easeProgress;
+        thermometerProgress.style.height = `${newHeight}%`;
+        
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        }
+    }
+    
+    requestAnimationFrame(step);
+}
+
+// Add a small debug indicator (can be removed for production)
+function addDebugIndicator() {
     const debugDiv = document.createElement('div');
     debugDiv.style.position = 'fixed';
     debugDiv.style.bottom = '0';
     debugDiv.style.right = '0';
-    debugDiv.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    debugDiv.style.backgroundColor = 'rgba(0,0,0,0.5)';
     debugDiv.style.color = 'white';
-    debugDiv.style.padding = '10px';
-    debugDiv.style.fontSize = '12px';
+    debugDiv.style.padding = '5px';
+    debugDiv.style.fontSize = '10px';
     debugDiv.style.zIndex = '9999';
-    debugDiv.style.maxWidth = '300px';
-    debugDiv.style.maxHeight = '200px';
-    debugDiv.style.overflow = 'auto';
-    debugDiv.id = 'debug-info';
+    debugDiv.id = 'debug-indicator';
     document.body.appendChild(debugDiv);
     
-    // Test the CSV URL
-    fetch(CSV_URL, { method: 'HEAD' })
-        .then(response => {
-            debugDiv.innerHTML += `<div>CSV URL status: ${response.status} ${response.ok ? 'OK' : 'FAILED'}</div>`;
-        })
-        .catch(error => {
-            debugDiv.innerHTML += `<div>CSV URL error: ${error.message}</div>`;
-        });
+    // Update the debug indicator periodically
+    setInterval(() => {
+        debugDiv.innerHTML = `Updates: ${formatCurrency(persistentValues.total)} / ${persistentValues.donorCount} donors`;
+    }, 1000);
 }
 
-// Initial setup - you can comment this out after debugging
-addDebugInfo();
+// Uncomment for debugging - comment out for production
+// addDebugIndicator();
 
-// Fetch data immediately on load
+// Start the fetch cycle immediately
 fetchDonationData();
 
-// Set up periodic refresh
-setInterval(fetchDonationData, REFRESH_INTERVAL);
-
-// Additional debug function you can call from browser console
-window.testCSV = function() {
-    const debugDiv = document.getElementById('debug-info');
-    debugDiv.innerHTML = '<div>Testing CSV connection...</div>';
-    
-    fetch(CSV_URL)
-        .then(response => response.text())
-        .then(text => {
-            if(text && text.length > 0) {
-                debugDiv.innerHTML += `<div>CSV data received: ${text.substring(0, 100)}...</div>`;
-            } else {
-                debugDiv.innerHTML += `<div>Empty CSV data received</div>`;
-            }
-        })
-        .catch(error => {
-            debugDiv.innerHTML += `<div>CSV fetch error: ${error.message}</div>`;
-        });
+// Add a manual refresh function that can be called from browser console
+window.manualRefresh = function() {
+    console.log('Manual refresh triggered');
+    fetchDonationData();
 };
