@@ -1,168 +1,461 @@
+/* 
+   PreAct Donation Thermometer Styles
+   For fundraising event display
+*/
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+}
+
+:root {
+    --primary-blue: #1A365D;
+    --secondary-blue: #20BDBE;
+    --accent-pink: #FF69B4;   /* Changed from coral to more pink color */
+    --accent-gold: #FFD700;
+    --light-bg: #EAF6FF;
+    --text-dark: #333;
+    --text-light: #666;
+    --white: #fff;
+    --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s ease;
 }
 
 body {
-    background-color: #f5f8fa;
-    display: flex;
-    flex-direction: column;
+    font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(to bottom, var(--light-bg), var(--white));
+    color: var(--text-dark);
     min-height: 100vh;
+    line-height: 1.6;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* Header */
 .header {
-    background-color: #00205B; /* Navy blue */
-    color: white;
-    text-align: center;
-    padding: 1.5rem 0;
+    background-color: var(--primary-blue);
+    color: var(--white);
+    padding: 1rem 0;
     width: 100%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.logo {
+    height: 60px;
+    width: auto;
+}
+
+.preact-logo {
+    height: 70px; /* Slightly larger for emphasis */
 }
 
 .header h1 {
     font-size: 2rem;
-    font-weight: bold;
+    text-align: center;
+    font-weight: 800;
+    letter-spacing: 0.5px;
 }
 
-.container {
+/* Hero Banner with QR Codes */
+.hero-banner {
+    background-image: linear-gradient(135deg, rgba(26, 54, 93, 0.85), rgba(32, 189, 190, 0.85));
+    height: 200px;
     display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
-    width: 90%;
-    max-width: 1200px;
-    background-color: white;
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    margin: 2rem auto;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    padding: 0 2rem;
 }
 
-.thermometer-container {
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://media-hosting.imagekit.io/eebf6dc0e2c54b38/help-hands.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.2;
+    z-index: 0;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--white);
+    flex: 1;
+}
+
+.qr-code-left, .qr-code-right {
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 50%;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s infinite alternate;
 }
 
-.goal-amount {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #5f9ea0; /* Light blue variant */
-    margin-bottom: 1.5rem;
+.qr-code {
+    width: 120px;
+    height: 120px;
+    border: 3px solid var(--white);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.qr-code-left p, .qr-code-right p {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: var(--accent-pink);
+    font-size: 1rem;
+}
+
+.tagline {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.tagline span {
+    color: var(--accent-pink);
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    font-weight: 400;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Main Container */
+.container {
+    max-width: 1200px;
+    margin: -50px auto 2rem;
+    background-color: transparent;
+    position: relative;
+    z-index: 10;
+    padding: 0 2rem;
+}
+
+/* Thermometer Section */
+.thermometer-container {
+    background-color: var(--white);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.goal-heading {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.goal-title {
+    font-size: 2rem;
+    color: var(--primary-blue);
+}
+
+.goal-title span {
+    color: var(--secondary-blue);
+}
+
+.goal-description {
+    color: var(--text-light);
+    margin-top: 0.5rem;
+}
+
+.thermometer-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+    margin-bottom: 2rem;
 }
 
 .thermometer {
-    display: flex;
-    height: 400px;
+    height: 350px;
     position: relative;
-    margin-bottom: 1.5rem;
+    margin: 0 auto;
 }
 
 .thermometer-track {
     width: 60px;
-    background-color: #e0f7ff; /* Light blue background */
+    height: 100%;
+    background-color: #e0f7ff;
     border-radius: 30px;
     overflow: hidden;
     position: relative;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .thermometer-progress {
     position: absolute;
     bottom: 0;
     width: 100%;
-    background: linear-gradient(to top, #ff69b4, #ff9ed2); /* Pink gradient */
+    background: linear-gradient(to top, var(--accent-pink), var(--secondary-blue));
     border-radius: 30px;
-    transition: height 1s ease-in-out;
+    transition: height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.1);
+    height: 0%; /* Will be set by JavaScript */
 }
 
 .thermometer-markers {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    position: absolute;
     height: 100%;
-    margin-left: 10px;
-    position: relative;
+    left: 70px;
+    top: 0;
+    width: 150px;
 }
 
 .marker {
     position: absolute;
-    font-size: 0.9rem;
-    color: #5f9ea0; /* Light blue variant */
-    transform: translateY(50%);
+    display: flex;
+    align-items: center;
+    transform: translateY(0);
+}
+
+.marker-line {
+    width: 10px;
+    height: 2px;
+    background-color: #ccc;
+    margin-right: 5px;
+}
+
+.marker-amount {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-blue);
+}
+
+.progress-stats {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .current-amount {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #ff69b4; /* Pink */
-    margin-top: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent-pink);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 .donor-count {
     font-size: 1.2rem;
-    color: #5f9ea0; /* Light blue variant */
-    margin-top: 0.5rem;
+    color: var(--text-light);
     margin-bottom: 1.5rem;
 }
 
-.donor-list-container {
-    width: 100%;
+/* Supporters Section - Moved from right column */
+.supporters-section {
+    background-color: var(--light-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
     margin-top: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.supporters-title {
+    color: var(--primary-blue);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
     text-align: center;
 }
 
-.donor-list-title {
-    color: #ff69b4; /* Pink */
-    margin-bottom: 0.5rem;
+.donor-list {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-dark);
+    text-align: center;
+}
+
+/* Impact Section */
+.impact-section {
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+    margin-top: 2rem;
+}
+
+.impact-section h3 {
+    text-align: center;
+    color: var(--primary-blue);
+    margin-bottom: 1.5rem;
     font-size: 1.5rem;
 }
 
-.donor-list {
-    font-size: 1rem;
-    color: #5f9ea0; /* Light blue variant */
-    line-height: 1.5;
-    max-height: 200px;
-    overflow-y: auto;
-    padding: 0.5rem;
-    background-color: #f9f9f9;
-    border-radius: 8px;
+.impact-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
 }
 
-.banner-container {
+.impact-item {
+    text-align: center;
+}
+
+.impact-icon {
+    width: 50px;
+    height: 50px;
+    background-color: var(--light-bg);
+    border-radius: 50%;
+    margin: 0 auto 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50%;
-    height: 100%;
+    transition: transform 0.3s ease;
 }
 
-.banner-image {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
+.impact-icon:hover {
+    transform: scale(1.1);
 }
 
-@media (max-width: 768px) {
+.impact-icon i {
+    font-size: 24px;
+    color: var(--primary-blue);
+}
+
+.impact-item p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+/* Partners Section - Now at the bottom */
+.partners-section {
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+    margin-top: 2rem;
+}
+
+.partner-logo-container {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    align-items: center;
+}
+
+.partner-logo {
+    height: 60px;
+    width: auto;
+    transition: var(--transition);
+    opacity: 0.9;
+}
+
+.partner-logo:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+.pulse {
+    animation: pulse 1s ease-in-out;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .thermometer-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .impact-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .partner-logo-container {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 767px) {
     .header h1 {
         font-size: 1.5rem;
     }
     
-    .container {
+    .hero-banner {
         flex-direction: column;
+        height: auto;
         padding: 1.5rem;
+        gap: 1rem;
     }
     
-    .thermometer-container, .banner-container {
+    .qr-code-left, .qr-code-right {
         width: 100%;
-        margin-bottom: 2rem;
+    }
+    
+    .qr-code-right {
+        display: none; /* Hide second QR on mobile */
+    }
+    
+    .tagline {
+        font-size: 2rem;
+    }
+    
+    .current-amount {
+        font-size: 2.5rem;
     }
     
     .thermometer {
-        height: 300px;
+        height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .impact-grid {
+        grid-template-columns: 1fr;
     }
     
-    .banner-image {
-        max-width: 100%;
+    .logo {
+        height: 40px;
+    }
+    
+    .preact-logo {
+        height: 50px;
     }
 }
