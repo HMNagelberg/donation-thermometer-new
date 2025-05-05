@@ -44,7 +44,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .header-content {
-    max-width: 1200px;
+    max-width: 1400px; /* Increased from 1200px */
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -61,13 +61,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .logo {
-    height: 70px;
+    height: 105px; /* Increased by 1.5x from 70px */
     width: auto;
     object-fit: contain;
 }
 
 .preact-logo {
-    height: 80px; /* Slightly larger for emphasis */
+    height: 120px; /* Increased by 1.5x from 80px */
 }
 
 .header h1 {
@@ -129,7 +129,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Main Container */
 .container {
-    max-width: 1200px;
+    max-width: 1400px; /* Increased from 1200px */
     margin: -50px auto 2rem;
     background-color: transparent;
     position: relative;
@@ -146,13 +146,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .qr-code-left, .qr-code-right {
-    width: 180px;
+    width: 300px; /* Increased from 180px */
     z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: rgba(255, 255, 255, 0.9);
-    padding: 1.2rem;
+    padding: 1.5rem; /* Increased padding */
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     animation: pulse 2s infinite alternate;
@@ -160,8 +160,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .qr-code {
-    width: 150px;
-    height: 150px;
+    width: 250px; /* Increased from 150px to approximately 2x size */
+    height: 250px; /* Increased from 150px to approximately 2x size */
     border: 3px solid var(--white);
     border-radius: 8px;
     background-color: white;
@@ -177,6 +177,9 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
     flex: 1;
     margin: 0 2rem;
+    width: 70%; /* Added to make the center container wider */
+    max-width: 1000px; /* Added to control maximum width */
+    margin: 0 auto; /* Center the container */
 }
 
 .goal-heading {
@@ -354,13 +357,36 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
     .qr-code-container {
+        display: flex;
+        justify-content: space-around;
+        padding: 0 1rem;
+    }
+    
+    .thermometer-container {
+        width: 100%;
+        max-width: 100%;
         margin: 0 1rem;
     }
     
     .qr-code-left, .qr-code-right {
         margin-top: 70px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .thermometer-container {
+        margin: 0 1rem;
+    }
+    
+    .qr-code-left, .qr-code-right {
+        width: 250px;
+    }
+    
+    .qr-code {
+        width: 200px;
+        height: 200px;
     }
 }
 
@@ -383,6 +409,7 @@ h1, h2, h3, h4, h5, h6 {
     .qr-code-left, .qr-code-right {
         margin: 0;
         margin-bottom: 1rem;
+        width: 250px; /* Maintain larger size even on smaller screens */
     }
     
     .thermometer-container {
@@ -392,6 +419,11 @@ h1, h2, h3, h4, h5, h6 {
     .qr-code-right {
         margin-top: 1rem;
     }
+    
+    .qr-code {
+        width: 200px; /* Maintain larger size even on smaller screens */
+        height: 200px; /* Maintain larger size even on smaller screens */
+    }
 }
 
 @media (max-width: 767px) {
@@ -400,11 +432,11 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .logo {
-        height: 50px;
+        height: 75px; /* Still bigger than original 50px */
     }
     
     .preact-logo {
-        height: 60px;
+        height: 90px; /* Still bigger than original 60px */
     }
     
     .hero-banner {
@@ -429,7 +461,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .qr-code {
-        width: 120px;
-        height: 120px;
+        width: 150px;
+        height: 150px;
     }
 }
