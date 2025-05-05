@@ -1,7 +1,12 @@
 // Configuration
 const GOAL_AMOUNT = 1000000;
-const REFRESH_INTERVAL = 3000; // Reduced to 3 seconds for more frequent updates
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRvwDVAwZcxpGpU9SwIfmJS19N1z_XMx8Txw0PIKFRYbbX9Vaffdm6GKyEhXwpSHUPNObHVaScBKilf/pub?output=csv';
+const REFRESH_INTERVAL = 3000; // 3 seconds for updates
+
+// Use a CORS proxy to access the Google Sheet
+// This is the critical change to bypass the CORS restriction
+const CORS_PROXY = 'https://corsproxy.io/?';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRvwDVAwZcxpGpU9SwIfmJS19N1z_XMx8Txw0PIKFRYbbX9Vaffdm6GKyEhXwpSHUPNObHVaScBKilf/pub?output=csv';
+const CSV_URL = CORS_PROXY + encodeURIComponent(SHEET_URL);
 
 // DOM Elements
 const thermometerProgress = document.getElementById('thermometer-progress');
@@ -19,25 +24,23 @@ const MAX_ERRORS = 3;
 // Function to fetch and process CSV data
 async function fetchDonationData() {
     try {
-        console.log("Attempting to fetch donation data from:", CSV_URL);
+        console.log("Attempting to fetch donation data via CORS proxy");
         
-        // Add a random query parameter to prevent caching
+        // Add cache-busting parameters
         const timestamp = new Date().getTime();
         const randomParam = Math.floor(Math.random() * 1000000);
         const noCacheUrl = `${CSV_URL}&_=${timestamp}&r=${randomParam}`;
         
-        console.log("Fetching from URL with cache busting:", noCacheUrl);
-        
         const response = await fetch(noCacheUrl, {
             method: 'GET',
-            cache: 'no-store', // Prevent caching
+            cache: 'no-store',
             headers: {
                 'Cache-Control': 'no-cache, no-store, must-revalidate',
                 'Pragma': 'no-cache',
                 'Expires': '0'
             },
             // Add a timeout to prevent hanging requests
-            signal: AbortSignal.timeout(5000) // 5 second timeout
+            signal: AbortSignal.timeout(7000) // 7 second timeout
         });
         
         if (!response.ok) {
@@ -45,57 +48,43 @@ async function fetchDonationData() {
         }
         
         const csvData = await response.text();
-        console.log("CSV data received:", csvData.substring(0, 100) + "..."); // Log the first 100 chars
         
         // Validate that we have actual CSV data
         if (!csvData || csvData.trim() === '') {
             throw new Error('Empty CSV data received');
         }
         
-        // Parse CSV data - improved error handling
+        // Parse CSV data
         const rows = csvData.split('\n')
             .filter(row => row.trim() !== '')
             .map(row => row.split(',').map(cell => cell.trim()));
         
-        console.log("Parsed rows:", rows.length);
-        
-        // Validate that we have at least a header row
         if (rows.length === 0) {
             throw new Error('No rows found in CSV');
         }
         
         const headers = rows[0];
-        console.log("CSV Headers:", headers);
         
-        // Find column indices with more robust fallbacks
+        // Find column indices
         let amountIndex = headers.findIndex(header => 
             header.toLowerCase().includes('amount') || 
             header.toLowerCase().includes('payment') ||
             header.toLowerCase().includes('donation')
         );
         
-        // Fallback if column not found - assume second column (index 1) might be amount
         if (amountIndex === -1) {
-            console.warn('Could not identify amount column by name. Using fallback column index 1.');
-            amountIndex = 1;
+            amountIndex = 1; // Fallback to column index 1
         }
         
-        console.log("Using amount column index:", amountIndex);
-        
-        // Find name column index with improved fallbacks
         let nameIndex = headers.findIndex(header => 
             header.toLowerCase().includes('name') || 
             header.toLowerCase().includes('donor') ||
             header.toLowerCase().includes('person')
         );
         
-        // Fallback if name column not found - assume first column (index 0) might be name
         if (nameIndex === -1) {
-            console.warn('Could not identify name column by name. Using fallback column index 0.');
-            nameIndex = 0;
+            nameIndex = 0; // Fallback to column index 0
         }
-        
-        console.log("Using name column index:", nameIndex);
         
         // Calculate total amount from all donations (excluding header row)
         let totalAmount = 0;
@@ -108,49 +97,38 @@ async function fetchDonationData() {
             
             // Skip malformed rows
             if (!columns || columns.length <= Math.max(amountIndex, nameIndex)) {
-                console.warn(`Skipping row ${i}: Insufficient columns`);
                 continue;
             }
             
-            // Process amount with improved parsing
+            // Process amount
             if (columns.length > amountIndex) {
                 try {
-                    // Handle various currency formats
                     let amountStr = columns[amountIndex];
-                    console.log(`Row ${i} raw amount value: "${amountStr}"`);
-                    
-                    // Remove currency symbols and non-numeric chars except decimal point and digits
                     amountStr = amountStr.replace(/[^\d.-]/g, '');
-                    
                     const amount = parseFloat(amountStr);
                     if (!isNaN(amount) && amount > 0) {
                         totalAmount += amount;
-                        console.log(`Row ${i} parsed amount: ${amount}`);
-                    } else {
-                        console.warn(`Invalid amount in row ${i}: ${columns[amountIndex]}`);
                     }
                 } catch (error) {
-                    console.warn(`Error processing amount in row ${i}:`, error);
+                    console.warn(`Error processing amount in row ${i}`);
                 }
             }
             
-            // Process donor name with improved handling
+            // Process donor name
             if (nameIndex !== -1 && columns.length > nameIndex) {
                 const name = columns[nameIndex].trim();
-                if (name && name.length > 0 && !name.toLowerCase().includes('test') && !name.toLowerCase().includes('header')) {
+                if (name && name.length > 0) {
                     donorNames.push(name);
-                    console.log(`Added donor name: ${name}`);
                 }
             }
         }
         
-        console.log(`Processed data - Total: ${formatCurrency(totalAmount)}, Donors: ${donorCount}, Names: ${donorNames.length}`);
+        console.log(`Processed data - Total: ${formatCurrency(totalAmount)}, Donors: ${donorCount}`);
         
         // Reset error counter on successful fetch
         consecutiveErrorCount = 0;
         
-        // Validate total (prevent fluctuations)
-        // For testing purposes, always update with new values
+        // Always update with the latest data
         lastValidTotal = totalAmount;
         lastValidDonorCount = donorCount;
         
@@ -161,7 +139,6 @@ async function fetchDonationData() {
         
         // Update display with animation
         updateDisplay(totalAmount, donorCount, lastValidDonorNames);
-        console.log(`Data updated successfully. Total: ${formatCurrency(totalAmount)}, Donors: ${donorCount}`);
         
     } catch (error) {
         consecutiveErrorCount++;
@@ -170,7 +147,7 @@ async function fetchDonationData() {
         // On error, maintain the last valid values
         updateDisplay(lastValidTotal, lastValidDonorCount, lastValidDonorNames);
         
-        // If we have too many consecutive errors, try an exponential backoff approach
+        // If we have too many consecutive errors, try exponential backoff
         if (consecutiveErrorCount > MAX_ERRORS) {
             const backoffTime = Math.min(30000, 1000 * Math.pow(2, consecutiveErrorCount - MAX_ERRORS));
             console.warn(`Too many consecutive errors. Next retry in ${backoffTime/1000} seconds`);
@@ -191,23 +168,17 @@ async function fetchDonationData() {
     }
 }
 
-// Helper function to calculate percentage with better clamping
+// Helper function to calculate percentage
 function calculatePercentage(amount) {
-    // Ensure we have valid input, default to 0
     if (typeof amount !== 'number' || isNaN(amount)) {
-        console.warn('Invalid amount provided to calculatePercentage:', amount);
         amount = 0;
     }
-    
-    // Ensure always between 0-100%
     return Math.min(Math.max((amount / GOAL_AMOUNT) * 100, 0), 100);
 }
 
 // Helper function to format currency
 function formatCurrency(amount) {
-    // Ensure we have valid input, default to 0
     if (typeof amount !== 'number' || isNaN(amount)) {
-        console.warn('Invalid amount provided to formatCurrency:', amount);
         amount = 0;
     }
     
@@ -221,24 +192,10 @@ function formatCurrency(amount) {
 // Helper function to update the display
 function updateDisplay(amount, donorCount, donorNames) {
     try {
-        console.log("Updating display with:", amount, donorCount, donorNames);
-        
-        // Ensure we have valid input
-        if (typeof amount !== 'number' || isNaN(amount)) {
-            console.warn('Invalid amount provided to updateDisplay:', amount);
-            amount = lastValidTotal || 0;
-        }
-        
-        if (typeof donorCount !== 'number' || isNaN(donorCount)) {
-            console.warn('Invalid donorCount provided to updateDisplay:', donorCount);
-            donorCount = lastValidDonorCount || 0;
-        }
-        
         // Calculate percentage
         const percentage = calculatePercentage(amount);
-        console.log("Thermometer percentage:", percentage);
         
-        // Get current thermometer height (defaulting to 0 if not set)
+        // Get current thermometer height
         const currentHeight = parseFloat(thermometerProgress.style.height || '0');
         
         // Update thermometer with animation only if value increased
@@ -262,8 +219,6 @@ function updateDisplay(amount, donorCount, donorNames) {
         } else {
             donorListElement.textContent = 'Thank you to all our supporters!';
         }
-        
-        console.log("Display updated successfully");
     } catch (error) {
         console.error('Error in updateDisplay:', error);
     }
@@ -273,7 +228,7 @@ function updateDisplay(amount, donorCount, donorNames) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing donation tracker...');
     
-    // Initial display (fallback values until first fetch)
+    // Initial display with fallback values until first fetch
     updateDisplay(0, 0, []);
     
     // Fetch data immediately on load
@@ -281,10 +236,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set up periodic refresh interval
     window.refreshInterval = setInterval(fetchDonationData, REFRESH_INTERVAL);
-    
-    // Add a visual indicator for when data refreshes
-    setInterval(() => {
-        const timestamp = new Date().toLocaleTimeString();
-        console.log(`Check for updates at ${timestamp}`);
-    }, REFRESH_INTERVAL);
 });
