@@ -1,5 +1,5 @@
 /* 
-   PreAct Donation Thermometer Styles
+   PreAct Donation Thermometer Styles - Fixed Version
    For fundraising event display
 */
 
@@ -12,8 +12,7 @@
 :root {
     --primary-blue: #1A365D;
     --secondary-blue: #20BDBE;
-    --accent-pink: #FF69B4;   /* Changed from coral to more pink color */
-    --accent-gold: #FFD700;
+    --accent-pink: #FF69B4;   /* Pink color as requested */
     --light-bg: #EAF6FF;
     --text-dark: #333;
     --text-light: #666;
@@ -65,6 +64,7 @@ h1, h2, h3, h4, h5, h6 {
 .logo {
     height: 60px;
     width: auto;
+    object-fit: contain;
 }
 
 .preact-logo {
@@ -97,9 +97,7 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('https://media-hosting.imagekit.io/eebf6dc0e2c54b38/help-hands.jpg');
-    background-size: cover;
-    background-position: center;
+    background-color: rgba(0, 0, 0, 0.1);
     opacity: 0.2;
     z-index: 0;
 }
@@ -131,6 +129,7 @@ h1, h2, h3, h4, h5, h6 {
     border: 3px solid var(--white);
     border-radius: 8px;
     margin-bottom: 0.5rem;
+    background-color: white;
 }
 
 .qr-code-left p, .qr-code-right p {
@@ -228,7 +227,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 30px;
     transition: height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.1);
-    height: 0%; /* Will be set by JavaScript */
+    height: 11%; /* Will be updated by JavaScript */
 }
 
 .thermometer-markers {
@@ -282,7 +281,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1.5rem;
 }
 
-/* Supporters Section - Moved from right column */
+/* Supporters Section */
 .supporters-section {
     background-color: var(--light-bg);
     border-radius: 12px;
@@ -345,9 +344,9 @@ h1, h2, h3, h4, h5, h6 {
     transform: scale(1.1);
 }
 
-.impact-icon i {
-    font-size: 24px;
-    color: var(--primary-blue);
+.impact-img {
+    width: 30px;
+    height: 30px;
 }
 
 .impact-item p {
@@ -372,6 +371,7 @@ h1, h2, h3, h4, h5, h6 {
 .partner-logo {
     height: 60px;
     width: auto;
+    object-fit: contain;
     transition: var(--transition);
     opacity: 0.9;
 }
