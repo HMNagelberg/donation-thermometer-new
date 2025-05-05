@@ -44,7 +44,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .header-content {
-    max-width: 1400px; /* Increased from 1200px */
+    max-width: 1400px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -61,13 +61,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .logo {
-    height: 105px; /* Increased by 1.5x from 70px */
+    height: 80px; /* Reduced from 105px */
     width: auto;
     object-fit: contain;
 }
 
 .preact-logo {
-    height: 120px; /* Increased by 1.5x from 80px */
+    height: 90px; /* Reduced from 120px */
 }
 
 .header h1 {
@@ -129,7 +129,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Main Container */
 .container {
-    max-width: 1400px; /* Increased from 1200px */
+    max-width: 1800px; /* Increased from 1400px */
     margin: -50px auto 2rem;
     background-color: transparent;
     position: relative;
@@ -146,13 +146,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .qr-code-left, .qr-code-right {
-    width: 300px; /* Increased from 180px */
+    width: 250px; /* Reduced slightly from 300px */
     z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: rgba(255, 255, 255, 0.9);
-    padding: 1.5rem; /* Increased padding */
+    padding: 1.5rem;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     animation: pulse 2s infinite alternate;
@@ -160,8 +160,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .qr-code {
-    width: 250px; /* Increased from 150px to approximately 2x size */
-    height: 250px; /* Increased from 150px to approximately 2x size */
+    width: 220px; /* Reduced from 250px */
+    height: 220px; /* Reduced from 250px */
     border: 3px solid var(--white);
     border-radius: 8px;
     background-color: white;
@@ -177,9 +177,9 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
     flex: 1;
     margin: 0 2rem;
-    width: 70%; /* Added to make the center container wider */
-    max-width: 1000px; /* Added to control maximum width */
-    margin: 0 auto; /* Center the container */
+    width: 75%; /* Increased from 70% */
+    max-width: 1200px; /* Increased from 1000px */
+    margin: 0 auto;
 }
 
 .goal-heading {
@@ -188,7 +188,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .goal-title {
-    font-size: 2.2rem;
+    font-size: 2.6rem; /* Increased from 2.2rem */
     color: var(--primary-blue);
 }
 
@@ -199,25 +199,25 @@ h1, h2, h3, h4, h5, h6 {
 .goal-description {
     color: var(--text-light);
     margin-top: 0.5rem;
-    font-size: 1.1rem;
+    font-size: 1.3rem; /* Increased from 1.1rem */
 }
 
 .thermometer-wrapper {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 4rem;
+    gap: 5rem; /* Increased from 4rem */
     margin-bottom: 2rem;
 }
 
 .thermometer {
-    height: 350px;
+    height: 380px; /* Increased from 350px */
     position: relative;
     margin: 0 auto;
 }
 
 .thermometer-track {
-    width: 60px;
+    width: 70px; /* Increased from 60px */
     height: 100%;
     background-color: #e0f7ff;
     border-radius: 30px;
@@ -234,15 +234,15 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 30px;
     transition: height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.1);
-    height: 11%; /* Will be updated by JavaScript */
+    height: 12%; /* Will be updated by JavaScript */
 }
 
 .thermometer-markers {
     position: absolute;
     height: 100%;
-    left: 70px;
+    left: 80px; /* Adjusted from 70px */
     top: 0;
-    width: 150px;
+    width: 170px; /* Increased from 150px */
 }
 
 .marker {
@@ -253,7 +253,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .marker-line {
-    width: 10px;
+    width: 15px; /* Increased from 10px */
     height: 2px;
     background-color: #ccc;
     margin-right: 5px;
@@ -261,7 +261,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .marker-amount {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.85rem;
+    font-size: 1rem; /* Increased from 0.85rem */
     font-weight: 600;
     color: var(--primary-blue);
 }
@@ -270,22 +270,23 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 400px;
+    max-width: 500px; /* Increased from 400px */
 }
 
 .current-amount {
     font-family: 'Montserrat', sans-serif;
-    font-size: 3.5rem;
+    font-size: 3.2rem; /* Adjusted from 3.5rem to fit on one line */
     font-weight: 800;
     color: var(--accent-pink);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     margin-bottom: 0.5rem;
     animation: fadeIn 0.5s ease-in-out;
     text-align: center;
+    white-space: nowrap; /* Ensure it stays on one line */
 }
 
 .donor-count {
-    font-size: 1.4rem;
+    font-size: 1.6rem; /* Increased from 1.4rem */
     color: var(--text-light);
     margin-bottom: 1.5rem;
     text-align: center;
@@ -303,12 +304,13 @@ h1, h2, h3, h4, h5, h6 {
 .supporters-title {
     color: var(--primary-blue);
     margin-bottom: 1rem;
-    font-size: 1.5rem;
+    font-size: 1.7rem; /* Increased from 1.5rem */
     text-align: center;
+    white-space: nowrap; /* Ensure it stays on one line */
 }
 
 .donor-list {
-    font-size: 1.1rem;
+    font-size: 1.2rem; /* Increased from 1.1rem */
     line-height: 1.6;
     color: var(--text-dark);
     text-align: center;
@@ -317,19 +319,19 @@ h1, h2, h3, h4, h5, h6 {
 /* Partners Section */
 .partners-section {
     border-top: 1px solid #eee;
-    padding-top: 2rem;
-    margin-top: 2rem;
+    padding-top: 2.5rem; /* Increased padding */
+    margin-top: 2.5rem; /* Increased margin */
 }
 
 .partner-logo-container {
     display: flex;
     justify-content: center;
-    gap: 3rem;
+    gap: 4rem; /* Increased from 3rem */
     align-items: center;
 }
 
 .partner-logo {
-    height: 80px;
+    height: 90px; /* Increased from 80px */
     width: auto;
     object-fit: contain;
     transition: var(--transition);
@@ -357,7 +359,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Responsive Design */
-@media (max-width: 1400px) {
+@media (max-width: 1600px) {
     .qr-code-container {
         display: flex;
         justify-content: space-around;
@@ -381,12 +383,12 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .qr-code-left, .qr-code-right {
-        width: 250px;
+        width: 220px;
     }
     
     .qr-code {
-        width: 200px;
-        height: 200px;
+        width: 180px;
+        height: 180px;
     }
 }
 
@@ -409,7 +411,7 @@ h1, h2, h3, h4, h5, h6 {
     .qr-code-left, .qr-code-right {
         margin: 0;
         margin-bottom: 1rem;
-        width: 250px; /* Maintain larger size even on smaller screens */
+        width: 220px;
     }
     
     .thermometer-container {
@@ -421,8 +423,12 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .qr-code {
-        width: 200px; /* Maintain larger size even on smaller screens */
-        height: 200px; /* Maintain larger size even on smaller screens */
+        width: 180px;
+        height: 180px;
+    }
+    
+    .current-amount {
+        font-size: 2.8rem; /* Reduce font size on smaller screens */
     }
 }
 
@@ -432,11 +438,11 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .logo {
-        height: 75px; /* Still bigger than original 50px */
+        height: 60px;
     }
     
     .preact-logo {
-        height: 90px; /* Still bigger than original 60px */
+        height: 70px;
     }
     
     .hero-banner {
@@ -453,7 +459,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .current-amount {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
     }
     
     .thermometer {
