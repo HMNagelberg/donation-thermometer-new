@@ -139,7 +139,7 @@ function updateDisplay(amount, donorCount, donorNames) {
     const percentage = calculatePercentage(amount);
     
     // Update thermometer with animation only if value increased
-    if (parseFloat(thermometerProgress.style.height) < percentage) {
+    if (parseFloat(thermometerProgress.style.height || '0') < percentage) {
         thermometerProgress.classList.add('pulse');
         setTimeout(() => {
             thermometerProgress.classList.remove('pulse');
@@ -160,26 +160,6 @@ function updateDisplay(amount, donorCount, donorNames) {
         donorListElement.textContent = 'No donor names available';
     }
 }
-
-// Add a little animation for when new donations come in
-function addPulseAnimation() {
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse {
-            animation: pulse 1s ease-in-out;
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// Initial setup
-addPulseAnimation();
 
 // Fetch data immediately on load
 fetchDonationData();
