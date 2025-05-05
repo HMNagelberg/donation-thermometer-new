@@ -56,18 +56,17 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
     margin-bottom: 1.5rem;
 }
 
 .logo {
-    height: 80px; /* Reduced from 105px */
+    height: 80px;
     width: auto;
     object-fit: contain;
 }
 
 .preact-logo {
-    height: 90px; /* Reduced from 120px */
+    height: 100px; /* Increased size of main logo */
 }
 
 .header h1 {
@@ -129,7 +128,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Main Container */
 .container {
-    max-width: 1800px; /* Increased from 1400px */
+    max-width: 1800px;
     margin: -50px auto 2rem;
     background-color: transparent;
     position: relative;
@@ -146,7 +145,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .qr-code-left, .qr-code-right {
-    width: 250px; /* Reduced slightly from 300px */
+    width: 325px; /* Increased by ~30% from 250px */
     z-index: 2;
     display: flex;
     flex-direction: column;
@@ -160,8 +159,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .qr-code {
-    width: 220px; /* Reduced from 250px */
-    height: 220px; /* Reduced from 250px */
+    width: 285px; /* Increased by ~30% from 220px */
+    height: 285px; /* Increased by ~30% from 220px */
     border: 3px solid var(--white);
     border-radius: 8px;
     background-color: white;
@@ -176,9 +175,8 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     flex-direction: column;
     flex: 1;
-    margin: 0 2rem;
-    width: 75%; /* Increased from 70% */
-    max-width: 1200px; /* Increased from 1000px */
+    width: 65%; /* Adjusted to balance with larger QR codes */
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -188,7 +186,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .goal-title {
-    font-size: 2.6rem; /* Increased from 2.2rem */
+    font-size: 2.6rem;
     color: var(--primary-blue);
 }
 
@@ -199,25 +197,25 @@ h1, h2, h3, h4, h5, h6 {
 .goal-description {
     color: var(--text-light);
     margin-top: 0.5rem;
-    font-size: 1.3rem; /* Increased from 1.1rem */
+    font-size: 1.3rem;
 }
 
 .thermometer-wrapper {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    gap: 5rem; /* Increased from 4rem */
+    align-items: center; /* Changed from flex-start to center for better alignment */
+    gap: 4.5rem; /* Adjusted for better spacing */
     margin-bottom: 2rem;
 }
 
 .thermometer {
-    height: 380px; /* Increased from 350px */
+    height: 380px;
     position: relative;
     margin: 0 auto;
 }
 
 .thermometer-track {
-    width: 70px; /* Increased from 60px */
+    width: 70px;
     height: 100%;
     background-color: #e0f7ff;
     border-radius: 30px;
@@ -240,9 +238,9 @@ h1, h2, h3, h4, h5, h6 {
 .thermometer-markers {
     position: absolute;
     height: 100%;
-    left: 80px; /* Adjusted from 70px */
+    left: 80px;
     top: 0;
-    width: 170px; /* Increased from 150px */
+    width: 170px;
 }
 
 .marker {
@@ -253,7 +251,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .marker-line {
-    width: 15px; /* Increased from 10px */
+    width: 15px;
     height: 2px;
     background-color: #ccc;
     margin-right: 5px;
@@ -261,7 +259,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .marker-amount {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1rem; /* Increased from 0.85rem */
+    font-size: 1rem;
     font-weight: 600;
     color: var(--primary-blue);
 }
@@ -270,23 +268,24 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 500px; /* Increased from 400px */
+    max-width: 500px;
+    align-self: center; /* Added for better vertical alignment */
 }
 
 .current-amount {
     font-family: 'Montserrat', sans-serif;
-    font-size: 3.2rem; /* Adjusted from 3.5rem to fit on one line */
+    font-size: 3.2rem;
     font-weight: 800;
     color: var(--accent-pink);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     margin-bottom: 0.5rem;
     animation: fadeIn 0.5s ease-in-out;
     text-align: center;
-    white-space: nowrap; /* Ensure it stays on one line */
+    white-space: nowrap;
 }
 
 .donor-count {
-    font-size: 1.6rem; /* Increased from 1.4rem */
+    font-size: 1.6rem;
     color: var(--text-light);
     margin-bottom: 1.5rem;
     text-align: center;
@@ -304,13 +303,13 @@ h1, h2, h3, h4, h5, h6 {
 .supporters-title {
     color: var(--primary-blue);
     margin-bottom: 1rem;
-    font-size: 1.7rem; /* Increased from 1.5rem */
+    font-size: 1.7rem;
     text-align: center;
-    white-space: nowrap; /* Ensure it stays on one line */
+    white-space: nowrap;
 }
 
 .donor-list {
-    font-size: 1.2rem; /* Increased from 1.1rem */
+    font-size: 1.2rem;
     line-height: 1.6;
     color: var(--text-dark);
     text-align: center;
@@ -319,19 +318,20 @@ h1, h2, h3, h4, h5, h6 {
 /* Partners Section */
 .partners-section {
     border-top: 1px solid #eee;
-    padding-top: 2.5rem; /* Increased padding */
-    margin-top: 2.5rem; /* Increased margin */
+    padding-top: 2.5rem;
+    margin-top: 2.5rem;
 }
 
 .partner-logo-container {
     display: flex;
     justify-content: center;
-    gap: 4rem; /* Increased from 3rem */
+    gap: 4rem;
     align-items: center;
+    flex-wrap: wrap; /* Added to help with mobile responsiveness */
 }
 
 .partner-logo {
-    height: 90px; /* Increased from 80px */
+    height: 90px;
     width: auto;
     object-fit: contain;
     transition: var(--transition);
@@ -383,12 +383,12 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .qr-code-left, .qr-code-right {
-        width: 220px;
+        width: 280px; /* Adjusted for responsive design */
     }
     
     .qr-code {
-        width: 180px;
-        height: 180px;
+        width: 240px;
+        height: 240px;
     }
 }
 
@@ -411,7 +411,7 @@ h1, h2, h3, h4, h5, h6 {
     .qr-code-left, .qr-code-right {
         margin: 0;
         margin-bottom: 1rem;
-        width: 220px;
+        width: 280px;
     }
     
     .thermometer-container {
@@ -423,8 +423,8 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .qr-code {
-        width: 180px;
-        height: 180px;
+        width: 240px;
+        height: 240px;
     }
     
     .current-amount {
@@ -442,7 +442,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .preact-logo {
-        height: 70px;
+        height: 80px;
     }
     
     .hero-banner {
@@ -467,7 +467,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .qr-code {
-        width: 150px;
-        height: 150px;
+        width: 200px;
+        height: 200px;
     }
 }
