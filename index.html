@@ -8,6 +8,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Performance optimization scripts -->
+    <script type="text/javascript">
+        // Preconnect to Google Docs/Sheets domain to speed up initial connection
+        let link = document.createElement('link');
+        link.rel = 'preconnect';
+        link.href = 'https://docs.google.com';
+        document.head.appendChild(link);
+        
+        // Add DNS prefetch for Google Sheets
+        link = document.createElement('link');
+        link.rel = 'dns-prefetch';
+        link.href = 'https://docs.google.com';
+        document.head.appendChild(link);
+    </script>
 </head>
 <body>
     <div class="header">
