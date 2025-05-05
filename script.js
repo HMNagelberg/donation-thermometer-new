@@ -1,7 +1,7 @@
 // Configuration
 const GOAL_AMOUNT = 1000000;
-const REFRESH_INTERVAL = 3000; // 3 seconds for faster updates
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRvwDVAwZcxpGpU9SwIfmJS19N1z_XMx8Txw0PIKFRYbbX9Vaffdm6GKyEhXwpSHUPNObHVaScBKilf/pub?output=csv';
+const REFRESH_INTERVAL = 5000; // 5 seconds
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRvwDVAwZcxpGpU9SwIfmJS19N1z_XMx8Txw0PIKFRYbbX9Vaffdm6GKyEhXwpSHUPNObHVaScBKilf/pub?gid=0&single=true&output=csv';
 
 // DOM Elements
 const thermometerProgress = document.getElementById('thermometer-progress');
@@ -9,21 +9,19 @@ const currentAmountElement = document.getElementById('current-amount');
 const donorCountElement = document.getElementById('donor-count');
 const donorListElement = document.getElementById('donor-list');
 
-// Use PapaParse for more reliable CSV parsing
-// We'll need to add this library to your HTML
+// Store previous valid values
+let lastValidTotal = 0;
+let lastValidDonorCount = 0;
+let lastValidDonorNames = [];
 
 // Function to fetch and process CSV data
 async function fetchDonationData() {
     try {
-        // Add cache-busting parameter with timestamp
-        const cacheBuster = new Date().getTime();
-        const response = await fetch(`${CSV_URL}&cacheBuster=${cacheBuster}`, {
+        const response = await fetch(CSV_URL + '&_=' + new Date().getTime(), {
             method: 'GET',
-            cache: 'no-store',
+            cache: 'no-store', // Prevent caching
             headers: {
-                'Cache-Control': 'no-cache, no-store, must-revalidate',
-                'Pragma': 'no-cache',
-                'Expires': '0'
+                'Cache-Control': 'no-cache'
             }
         });
         
@@ -33,87 +31,92 @@ async function fetchDonationData() {
         
         const csvData = await response.text();
         
-        // Parse CSV with PapaParse
-        Papa.parse(csvData, {
-            header: true,
-            dynamicTyping: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                processData(results.data);
-            },
-            error: function(error) {
-                console.error('CSV parsing error:', error);
-            }
-        });
-    } catch (error) {
-        console.error('Error fetching donation data:', error);
-    }
-}
-
-// Process the parsed data
-function processData(data) {
-    if (!data || data.length === 0) {
-        console.error('No data in CSV');
-        return;
-    }
-    
-    console.log('CSV data received:', data);
-    
-    // Find amount and name columns (case insensitive search)
-    const columns = Object.keys(data[0]);
-    
-    const amountColumn = columns.find(col => 
-        col.toLowerCase().includes('amount') || 
-        col.toLowerCase().includes('payment') ||
-        col.toLowerCase().includes('donation')
-    );
-    
-    const nameColumn = columns.find(col => 
-        col.toLowerCase().includes('name') || 
-        col.toLowerCase().includes('donor')
-    );
-    
-    if (!amountColumn) {
-        console.error('Could not find amount column in CSV');
-        return;
-    }
-    
-    // Calculate total amount
-    let totalAmount = 0;
-    const donorCount = data.length;
-    const donorNames = [];
-    
-    data.forEach(row => {
-        // Process amount
-        let amount = 0;
-        if (row[amountColumn] !== undefined) {
-            // Handle different data types
-            if (typeof row[amountColumn] === 'number') {
-                amount = row[amountColumn];
-            } else if (typeof row[amountColumn] === 'string') {
+        // Validate that we have actual CSV data
+        if (!csvData || csvData.trim() === '') {
+            console.error('Empty CSV data received');
+            updateDisplay(lastValidTotal, lastValidDonorCount, lastValidDonorNames);
+            return;
+        }
+        
+        // Parse CSV data
+        const rows = csvData.split('\n').filter(row => row.trim() !== '');
+        
+        // Validate that we have at least a header row
+        if (rows.length === 0) {
+            console.error('No rows found in CSV');
+            updateDisplay(lastValidTotal, lastValidDonorCount, lastValidDonorNames);
+            return;
+        }
+        
+        const headers = rows[0].split(',');
+        
+        // Find column indices
+        const amountIndex = headers.findIndex(header => 
+            header.toLowerCase().includes('amount') || 
+            header.toLowerCase().includes('payment')
+        );
+        
+        // Find name column index
+        const nameIndex = headers.findIndex(header => 
+            header.toLowerCase().includes('name') || 
+            header.toLowerCase().includes('donor')
+        );
+        
+        if (amountIndex === -1) {
+            console.error('Could not find amount column in CSV');
+            updateDisplay(lastValidTotal, lastValidDonorCount, lastValidDonorNames);
+            return;
+        }
+        
+        // Calculate total amount from all donations (excluding header row)
+        let totalAmount = 0;
+        const donorCount = rows.length - 1;
+        const donorNames = [];
+        
+        for (let i = 1; i < rows.length; i++) {
+            const columns = rows[i].split(',');
+            
+            // Process amount
+            if (columns.length > amountIndex) {
                 // Remove any non-numeric characters except decimal point
-                const amountStr = row[amountColumn].replace(/[^\d.]/g, '');
-                amount = parseFloat(amountStr);
+                const amountStr = columns[amountIndex].replace(/[^\d.]/g, '');
+                const amount = parseFloat(amountStr);
+                if (!isNaN(amount)) {
+                    totalAmount += amount;
+                }
             }
             
-            if (!isNaN(amount)) {
-                totalAmount += amount;
+            // Process donor name
+            if (nameIndex !== -1 && columns.length > nameIndex) {
+                const name = columns[nameIndex].trim();
+                if (name) {
+                    donorNames.push(name);
+                }
             }
         }
         
-        // Process donor name
-        if (nameColumn && row[nameColumn]) {
-            const name = String(row[nameColumn]).trim();
-            if (name) {
-                donorNames.push(name);
-            }
+        // Validate total (ensure it's not less than previous valid total)
+        if (donorCount < lastValidDonorCount || totalAmount < lastValidTotal) {
+            console.warn('New total is less than previous valid total. Possible data issue. Keeping previous values.');
+            updateDisplay(lastValidTotal, lastValidDonorCount, lastValidDonorNames);
+            return;
         }
-    });
-    
-    // Update display
-    updateDisplay(totalAmount, donorCount, donorNames);
-    
-    console.log(`Data refreshed. Total: ${formatCurrency(totalAmount)}, Donors: ${donorCount}, Percentage: ${calculatePercentage(totalAmount).toFixed(2)}%`);
+        
+        // Update stored valid values
+        lastValidTotal = totalAmount;
+        lastValidDonorCount = donorCount;
+        lastValidDonorNames = donorNames;
+        
+        // Update display
+        updateDisplay(totalAmount, donorCount, donorNames);
+        
+        console.log(`Data refreshed. Total: ${formatCurrency(totalAmount)}, Donors: ${donorCount}, Percentage: ${calculatePercentage(totalAmount).toFixed(2)}%`);
+        
+    } catch (error) {
+        console.error('Error fetching donation data:', error);
+        // On error, maintain the last valid values
+        updateDisplay(lastValidTotal, lastValidDonorCount, lastValidDonorNames);
+    }
 }
 
 // Helper function to calculate percentage
@@ -135,9 +138,8 @@ function updateDisplay(amount, donorCount, donorNames) {
     // Calculate percentage
     const percentage = calculatePercentage(amount);
     
-    // Update thermometer with animation
-    const currentHeight = parseFloat(thermometerProgress.style.height) || 0;
-    if (percentage > currentHeight) {
+    // Update thermometer with animation only if value increased
+    if (parseFloat(thermometerProgress.style.height) < percentage) {
         thermometerProgress.classList.add('pulse');
         setTimeout(() => {
             thermometerProgress.classList.remove('pulse');
@@ -147,25 +149,37 @@ function updateDisplay(amount, donorCount, donorNames) {
     // Update thermometer height
     thermometerProgress.style.height = `${percentage}%`;
     
-    // Update text with animation if values changed
-    const currentAmountText = `${formatCurrency(amount)} raised`;
-    if (currentAmountElement.textContent !== currentAmountText) {
-        currentAmountElement.classList.add('pulse');
-        currentAmountElement.textContent = currentAmountText;
-        setTimeout(() => {
-            currentAmountElement.classList.remove('pulse');
-        }, 1000);
-    }
-    
-    donorCountElement.textContent = `${donorCount} donation${donorCount !== 1 ? 's' : ''}`;
+    // Update text
+    currentAmountElement.textContent = `${formatCurrency(amount)} raised`;
+    donorCountElement.textContent = `${donorCount} donations`;
     
     // Update donor list
     if (donorNames && donorNames.length > 0) {
         donorListElement.innerHTML = donorNames.join(', ');
     } else {
-        donorListElement.textContent = 'Be the first to donate!';
+        donorListElement.textContent = 'No donor names available';
     }
 }
+
+// Add a little animation for when new donations come in
+function addPulseAnimation() {
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 1s ease-in-out;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Initial setup
+addPulseAnimation();
 
 // Fetch data immediately on load
 fetchDonationData();
