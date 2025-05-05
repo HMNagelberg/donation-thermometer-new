@@ -1,7 +1,7 @@
 // Configuration
 const GOAL_AMOUNT = 1000000;
-const REFRESH_INTERVAL = 5000; // 5 seconds
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRvwDVAwZcxpGpU9SwIfmJS19N1z_XMx8Txw0PIKFRYbbX9Vaffdm6GKyEhXwpSHUPNObHVaScBKilf/pub?output=csv';
+const REFRESH_INTERVAL = 4000; // 4 seconds
+const CSV_BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRvwDVAwZcxpGpU9SwIfmJS19N1z_XMx8Txw0PIKFRYbbX9Vaffdm6GKyEhXwpSHUPNObHVaScBKilf/pub?output=csv';
 
 // DOM Elements
 const thermometerProgress = document.getElementById('thermometer-progress');
@@ -9,101 +9,183 @@ const currentAmountElement = document.getElementById('current-amount');
 const donorCountElement = document.getElementById('donor-count');
 const donorListElement = document.getElementById('donor-list');
 
-// Store last valid values
-let lastAmount = 0;
-let lastDonorCount = 0;
-let lastDonorNames = [];
+// Track values 
+let currentValues = {
+    amount: 0,
+    donorCount: 0,
+    donorNames: []
+};
 
-// Function to fetch and process CSV data - simplified for reliability
-function fetchDonationData() {
-    console.log('Attempting to fetch donation data...');
+// Debug status element
+let statusElement = null;
+
+// Create status indicators
+function setupDebugPanel() {
+    const debugDiv = document.createElement('div');
+    debugDiv.style.position = 'fixed';
+    debugDiv.style.bottom = '10px';
+    debugDiv.style.right = '10px';
+    debugDiv.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    debugDiv.style.color = '#fff';
+    debugDiv.style.padding = '8px';
+    debugDiv.style.borderRadius = '4px';
+    debugDiv.style.fontSize = '14px';
+    debugDiv.style.fontFamily = 'monospace';
+    debugDiv.style.zIndex = '9999';
+    debugDiv.style.display = 'flex';
+    debugDiv.style.flexDirection = 'column';
+    debugDiv.style.gap = '5px';
+    debugDiv.innerHTML = `
+        <div>
+            <span id="status-indicator">⚪</span> 
+            <span id="status-text">Initializing...</span>
+            <button id="hide-debug" style="margin-left: 10px;">Hide</button>
+            <button id="force-refresh" style="margin-left: 5px;">Refresh Now</button>
+        </div>
+        <div id="data-status"></div>
+    `;
     
-    // Use simple fetch with basic URL (no fancy parameters)
-    fetch(CSV_URL)
-    .then(response => {
-        console.log('Response status:', response.status);
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
+    document.body.appendChild(debugDiv);
+    statusElement = document.getElementById('status-text');
+    
+    // Add event listeners
+    document.getElementById('hide-debug').addEventListener('click', () => {
+        debugDiv.style.display = 'none';
+    });
+    
+    document.getElementById('force-refresh').addEventListener('click', () => {
+        fetchWithAntiCache();
+    });
+}
+
+// Function to fetch data with strong anti-caching measures
+function fetchWithAntiCache() {
+    updateStatus('🔄', 'Fetching data...');
+    
+    // Create a unique URL each time to bypass cache
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 15);
+    const fetchUrl = `${CSV_BASE_URL}?_t=${timestamp}&_r=${random}`;
+    
+    // Use XMLHttpRequest for more control over caching
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', fetchUrl, true);
+    xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    xhr.setRequestHeader('Pragma', 'no-cache');
+    xhr.setRequestHeader('Expires', '0');
+    
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            updateStatus('✅', 'Data received');
+            processCSVData(xhr.responseText);
+        } else {
+            updateStatus('❌', `Error: HTTP ${xhr.status}`);
+            console.error('HTTP Error:', xhr.status);
         }
-        return response.text();
-    })
-    .then(csvData => {
-        console.log('CSV data received, length:', csvData.length);
-        
-        if (!csvData || csvData.trim() === '') {
-            console.error('Empty CSV data received');
-            return;
-        }
-        
-        // Basic CSV parsing
+    };
+    
+    xhr.onerror = function() {
+        updateStatus('❌', 'Network error');
+        console.error('Network Error');
+    };
+    
+    xhr.send();
+}
+
+// Process the CSV data
+function processCSVData(csvData) {
+    if (!csvData || csvData.trim() === '') {
+        updateStatus('⚠️', 'Empty CSV data');
+        return;
+    }
+    
+    try {
+        // Split into rows and filter out empty ones
         const rows = csvData.split('\n').filter(row => row.trim() !== '');
-        console.log('Rows found:', rows.length);
         
         if (rows.length <= 1) {
-            console.error('No data rows found in CSV');
+            updateStatus('⚠️', 'No data rows found');
             return;
         }
         
-        // Get headers
-        const headers = rows[0].split(',');
+        // Parse header row to find columns
+        const headerRow = rows[0];
+        const headers = parseCSVRow(headerRow);
         
-        // Find column indices
-        const amountIndex = findColumnIndex(headers, ['amount', 'payment']);
-        const nameIndex = findColumnIndex(headers, ['name', 'donor']);
-        
-        console.log('Column indices - Amount:', amountIndex, 'Name:', nameIndex);
+        // Find relevant column indices
+        const amountIndex = findColumnIndex(headers, ['amount', 'payment', 'donation']);
+        const nameIndex = findColumnIndex(headers, ['name', 'donor', 'participant']);
         
         if (amountIndex === -1) {
-            console.error('Could not find amount column in CSV. Headers:', headers);
+            updateStatus('⚠️', 'Amount column not found');
+            document.getElementById('data-status').textContent = 
+                `Headers found: ${headers.join(', ')}`;
             return;
         }
         
-        // Process data
+        // Process all data rows
         let totalAmount = 0;
         const donorCount = rows.length - 1;
         const donorNames = [];
         
         for (let i = 1; i < rows.length; i++) {
-            const columns = rows[i].split(',');
+            const rowData = parseCSVRow(rows[i]);
             
-            // Process amount
-            if (amountIndex !== -1 && columns.length > amountIndex) {
-                const amountStr = columns[amountIndex].replace(/[^\d.]/g, '');
+            // Get amount
+            if (rowData.length > amountIndex) {
+                // Handle amount - clean it and convert to number
+                const amountStr = rowData[amountIndex].replace(/[^\d.]/g, '');
                 const amount = parseFloat(amountStr);
                 if (!isNaN(amount)) {
                     totalAmount += amount;
                 }
             }
             
-            // Process donor name
-            if (nameIndex !== -1 && columns.length > nameIndex) {
-                const name = columns[nameIndex].trim();
-                if (name) {
-                    donorNames.push(name);
-                }
+            // Get name
+            if (nameIndex !== -1 && rowData.length > nameIndex) {
+                const name = rowData[nameIndex].trim();
+                if (name) donorNames.push(name);
             }
         }
         
-        console.log('Processed data - Total:', totalAmount, 'Donors:', donorCount);
+        // Update status with data summary
+        const dataStatusEl = document.getElementById('data-status');
+        dataStatusEl.textContent = `Found ${donorCount} donations totaling ${formatCurrency(totalAmount)}`;
         
-        // Only update if we have valid data
-        if (totalAmount > 0) {
-            lastAmount = totalAmount;
-            lastDonorCount = donorCount;
-            lastDonorNames = donorNames;
-            
-            // Update display
-            updateDisplay(totalAmount, donorCount, donorNames);
-        }
-    })
-    .catch(error => {
-        console.error('Error fetching donation data:', error);
-        // On error, use last valid values
-        updateDisplay(lastAmount, lastDonorCount, lastDonorNames);
-    });
+        // Update the display
+        updateValues(totalAmount, donorCount, donorNames);
+        
+    } catch (error) {
+        updateStatus('❌', `Parse error: ${error.message}`);
+        console.error('Error processing CSV:', error);
+    }
 }
 
-// Simple helper to find column index
+// Properly parse CSV row (handles quoted fields with commas)
+function parseCSVRow(row) {
+    const result = [];
+    let insideQuotes = false;
+    let currentValue = '';
+    
+    for (let i = 0; i < row.length; i++) {
+        const char = row[i];
+        
+        if (char === '"') {
+            insideQuotes = !insideQuotes;
+        } else if (char === ',' && !insideQuotes) {
+            result.push(currentValue);
+            currentValue = '';
+        } else {
+            currentValue += char;
+        }
+    }
+    
+    // Add the last value
+    result.push(currentValue);
+    return result;
+}
+
+// Find column index by possible names
 function findColumnIndex(headers, possibleNames) {
     for (let i = 0; i < headers.length; i++) {
         const header = headers[i].toLowerCase().trim();
@@ -116,12 +198,60 @@ function findColumnIndex(headers, possibleNames) {
     return -1;
 }
 
-// Helper function to calculate percentage
-function calculatePercentage(amount) {
-    return Math.min((amount / GOAL_AMOUNT) * 100, 100);
+// Update the current values and display
+function updateValues(amount, donorCount, donorNames) {
+    // Only update if we have valid data
+    if (amount > 0 && donorCount > 0) {
+        currentValues = {
+            amount: amount,
+            donorCount: donorCount,
+            donorNames: donorNames
+        };
+        
+        // Update the display
+        updateDisplay();
+    }
 }
 
-// Helper function to format currency
+// Update the visual display
+function updateDisplay() {
+    // Calculate percentage
+    const percentage = Math.min((currentValues.amount / GOAL_AMOUNT) * 100, 100);
+    
+    // Update thermometer with simple animation
+    animateHeight(thermometerProgress, percentage);
+    
+    // Update text elements
+    currentAmountElement.textContent = `${formatCurrency(currentValues.amount)} raised`;
+    donorCountElement.textContent = `${currentValues.donorCount} donations`;
+    
+    // Update donor list
+    if (currentValues.donorNames.length > 0) {
+        donorListElement.innerHTML = currentValues.donorNames.join(', ');
+    } else {
+        donorListElement.textContent = 'No donor names available';
+    }
+}
+
+// Simple height animation
+function animateHeight(element, targetPercentage) {
+    // Get current height
+    const currentHeight = parseFloat(element.style.height || '0');
+    
+    // Only animate if there's a significant change
+    if (Math.abs(currentHeight - targetPercentage) < 0.5) return;
+    
+    // Set the new height directly for better performance
+    element.style.height = `${targetPercentage}%`;
+    
+    // Add a simple animation class
+    element.classList.add('pulse');
+    setTimeout(() => {
+        element.classList.remove('pulse');
+    }, 700);
+}
+
+// Format currency
 function formatCurrency(amount) {
     return amount.toLocaleString('en-US', {
         style: 'currency',
@@ -130,109 +260,28 @@ function formatCurrency(amount) {
     });
 }
 
-// Helper function to update the display
-function updateDisplay(amount, donorCount, donorNames) {
-    // Calculate percentage
-    const percentage = calculatePercentage(amount);
+// Update status indicator
+function updateStatus(icon, message) {
+    const indicator = document.getElementById('status-indicator');
+    if (indicator) indicator.textContent = icon;
     
-    // Update thermometer (simple, no animation)
-    thermometerProgress.style.height = `${percentage}%`;
-    
-    // Update text
-    currentAmountElement.textContent = `${formatCurrency(amount)} raised`;
-    donorCountElement.textContent = `${donorCount} donations`;
-    
-    // Update donor list
-    if (donorNames && donorNames.length > 0) {
-        donorListElement.innerHTML = donorNames.join(', ');
-    } else {
-        donorListElement.textContent = 'No donor names available';
-    }
+    if (statusElement) statusElement.textContent = message;
 }
 
-// Create a simple debug display to show what's happening
-function createDebugDisplay() {
-    const debugDiv = document.createElement('div');
-    debugDiv.style.position = 'fixed';
-    debugDiv.style.top = '10px';
-    debugDiv.style.right = '10px';
-    debugDiv.style.backgroundColor = 'rgba(0,0,0,0.8)';
-    debugDiv.style.color = 'white';
-    debugDiv.style.padding = '10px';
-    debugDiv.style.borderRadius = '5px';
-    debugDiv.style.zIndex = '1000';
-    debugDiv.style.fontSize = '12px';
-    debugDiv.style.maxWidth = '400px';
-    debugDiv.style.maxHeight = '300px';
-    debugDiv.style.overflow = 'auto';
-    debugDiv.id = 'debug-panel';
+// Initialize and start
+function initialize() {
+    setupDebugPanel();
+    updateStatus('🚀', 'Starting...');
     
-    // Add controls
-    debugDiv.innerHTML = `
-        <div><strong>Debug Panel</strong> <button id="hide-debug" style="float:right">Hide</button></div>
-        <div id="csv-status">Testing CSV connection...</div>
-        <div>
-            <button id="test-connection">Test Connection</button>
-            <button id="force-refresh">Force Refresh</button>
-        </div>
-        <div id="debug-log" style="margin-top:10px;font-family:monospace;"></div>
-    `;
+    // Fetch data immediately
+    fetchWithAntiCache();
     
-    document.body.appendChild(debugDiv);
-    
-    // Add event listeners
-    document.getElementById('hide-debug').addEventListener('click', () => {
-        debugDiv.style.display = 'none';
-    });
-    
-    document.getElementById('test-connection').addEventListener('click', testCSVConnection);
-    document.getElementById('force-refresh').addEventListener('click', fetchDonationData);
-    
-    // Test connection immediately
-    testCSVConnection();
+    // Set up interval for regular updates
+    setInterval(fetchWithAntiCache, REFRESH_INTERVAL);
 }
 
-// Function to test CSV connection
-function testCSVConnection() {
-    const statusEl = document.getElementById('csv-status');
-    const logEl = document.getElementById('debug-log');
-    
-    statusEl.innerHTML = 'Testing CSV connection...';
-    
-    fetch(CSV_URL, { method: 'HEAD' })
-    .then(response => {
-        if (response.ok) {
-            statusEl.innerHTML = '<span style="color:green">✓ CSV accessible</span>';
-            
-            // Try to get contents
-            return fetch(CSV_URL).then(r => r.text());
-        } else {
-            statusEl.innerHTML = `<span style="color:red">✗ CSV error: ${response.status}</span>`;
-            throw new Error(`HTTP error: ${response.status}`);
-        }
-    })
-    .then(text => {
-        if (text && text.length > 0) {
-            const rows = text.split('\n').filter(row => row.trim() !== '');
-            logEl.innerHTML = `CSV data: ${rows.length} rows<br>First row: ${rows[0]}<br>${text.substr(0, 100)}...`;
-        } else {
-            logEl.innerHTML = 'CSV accessible but empty';
-        }
-    })
-    .catch(error => {
-        statusEl.innerHTML = `<span style="color:red">✗ CSV error: ${error.message}</span>`;
-        logEl.innerHTML = `Error details: ${error.toString()}`;
-    });
-}
+// Start everything when the page loads
+window.addEventListener('load', initialize);
 
-// Add global functions for debugging from console
-window.testCSV = testCSVConnection;
-window.forceRefresh = fetchDonationData;
-
-// Create debug display (comment out for production)
-createDebugDisplay();
-
-// Start the application
-console.log('Starting donation thermometer application...');
-fetchDonationData();
-setInterval(fetchDonationData, REFRESH_INTERVAL);
+// Make refresh function available globally
+window.manualRefresh = fetchWithAntiCache;
