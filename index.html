@@ -3,39 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donation Thermometer</title>
+    <title>PreAct Donation Thermometer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="header">
-        <h1>THANK YOU FOR SUPPORTING OUR EFFORTS!</h1>
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="https://media-hosting.imagekit.io/f19b97a5f14445f2/image%20(8).png" alt="Mount Sinai Logo" class="logo">
+                <img src="https://media-hosting.imagekit.io/c1fa77460b404e43/image%20(9).png" alt="PreAct Logo" class="logo preact-logo">
+                <img src="https://media-hosting.imagekit.io/39427be470724078/image%20(10).png" alt="Tel Aviv Medical Center Logo" class="logo">
+            </div>
+            <h1>THANK YOU FOR SUPPORTING OUR EFFORTS!</h1>
+        </div>
     </div>
+    
+    <div class="hero-banner">
+        <div class="qr-code-left">
+            <img src="https://media-hosting.imagekit.io/b5199659577a4b8c/qr-code.png" alt="Donation QR Code" class="qr-code">
+            <p>Scan to Donate</p>
+        </div>
+        
+        <div class="hero-content">
+            <h2 class="tagline">Stronger <span>Together!</span></h2>
+            <p class="hero-description">Helping communities heal from mass trauma</p>
+        </div>
+        
+        <div class="qr-code-right">
+            <img src="https://media-hosting.imagekit.io/b5199659577a4b8c/qr-code.png" alt="Donation QR Code" class="qr-code">
+            <p>Scan to Donate</p>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="thermometer-container">
-            <div class="goal-amount">Goal: $1,000,000</div>
-            <div class="thermometer">
-                <div class="thermometer-track">
-                    <div id="thermometer-progress" class="thermometer-progress"></div>
+            <div class="goal-heading">
+                <h2 class="goal-title">Goal: <span>$1,000,000</span></h2>
+                <p class="goal-description">Supporting trauma research, training, and intervention</p>
+            </div>
+            
+            <div class="thermometer-wrapper">
+                <div class="thermometer" id="thermometer">
+                    <div class="thermometer-track">
+                        <div id="thermometer-progress" class="thermometer-progress"></div>
+                    </div>
+                    <div class="thermometer-markers">
+                        <div class="marker" style="bottom: 0%">
+                            <span class="marker-line"></span>
+                            <span class="marker-amount">$0</span>
+                        </div>
+                        <div class="marker" style="bottom: 25%">
+                            <span class="marker-line"></span>
+                            <span class="marker-amount">$250,000</span>
+                        </div>
+                        <div class="marker" style="bottom: 50%">
+                            <span class="marker-line"></span>
+                            <span class="marker-amount">$500,000</span>
+                        </div>
+                        <div class="marker" style="bottom: 75%">
+                            <span class="marker-line"></span>
+                            <span class="marker-amount">$750,000</span>
+                        </div>
+                        <div class="marker" style="bottom: 100%">
+                            <span class="marker-line"></span>
+                            <span class="marker-amount">$1,000,000</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="thermometer-markers">
-                    <div class="marker" style="bottom: 0%">$0</div>
-                    <div class="marker" style="bottom: 25%">$250,000</div>
-                    <div class="marker" style="bottom: 50%">$500,000</div>
-                    <div class="marker" style="bottom: 75%">$750,000</div>
-                    <div class="marker" style="bottom: 100%">$1,000,000</div>
+                
+                <div class="progress-stats">
+                    <div id="current-amount" class="current-amount">$110,100 raised</div>
+                    <div id="donor-count" class="donor-count">3 donations</div>
+                    <div class="supporters-section">
+                        <h3 class="supporters-title">Thank You To Our Supporters</h3>
+                        <div id="donor-list" class="donor-list">test 1, test 2, test 3</div>
+                    </div>
                 </div>
             </div>
-            <div id="current-amount" class="current-amount">Loading...</div>
-            <div id="donor-count" class="donor-count">Loading...</div>
-            <div class="donor-list-container">
-                <h2 class="donor-list-title">Thank You To:</h2>
-                <div id="donor-list" class="donor-list">Loading donor names...</div>
+            
+            <div class="impact-section">
+                <h3>Your Donation Helps</h3>
+                <div class="impact-grid">
+                    <div class="impact-item">
+                        <div class="impact-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <p>Training & Education</p>
+                    </div>
+                    <div class="impact-item">
+                        <div class="impact-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <p>Innovation & Technology</p>
+                    </div>
+                    <div class="impact-item">
+                        <div class="impact-icon">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <p>Rapid Intervention</p>
+                    </div>
+                    <div class="impact-item">
+                        <div class="impact-icon">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <p>Research & Evaluation</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="banner-container">
-            <img src="https://media-hosting.imagekit.io/e8cbe0ea2bd2458c/and%20supporting%20(3).png?Expires=1840534236&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=PyctK8weNSradaMQkxBX8MYNX3FhslIJTn9TE-eUlcyiU8gFe0pzmvC6ZCgGysJqaCTzAl~pUpuWxUrOd80TMRSFS0pgQOwQYq1QoOSzlSXPXJxbBV63ywCF9kEc4WdRlwtOEOx~85Rja7wtsAJ-Tk60mq1J3utjN6avCAWyNDeccHfaEdETIshFLcUoJEr0zVE3tEW55PpzxdP3ZAmin0NX7f2c42XVDWu7L2dM9xDCRrEim6KJjc0VsYBe4Md7urrQvmMB6fNprQixvpmL4318DICa0wgl5T~WGpFklEfEnS4jbJnM6vySynpe0QAE0M3jkihwyz55rE0TCtQcBA__" alt="Supporting Banner" class="banner-image">
+            
+            <div class="partners-section">
+                <div class="partner-logo-container">
+                    <img src="https://media-hosting.imagekit.io/eebf6dc0e2c54b38/image%20(11).png" alt="Eden Gallery Logo" class="partner-logo">
+                    <img src="https://media-hosting.imagekit.io/795acc5b3d0b4171/Global%20F%20english.png" alt="Friends of Logo" class="partner-logo">
+                </div>
+            </div>
         </div>
     </div>
-    <script src="script.js"></script>
+    
+    <script>
+        // Configuration
+        const GOAL_AMOUNT = 1000000;
+        
+        // Set up thermometer animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBar = document.getElementById('thermometer-progress');
+            progressBar.style.height = '11%'; // Set to current percentage (based on $110,100 raised)
+            
+            progressBar.classList.add('pulse');
+            setTimeout(() => {
+                progressBar.classList.remove('pulse');
+            }, 1500);
+        });
+    </script>
 </body>
 </html>
