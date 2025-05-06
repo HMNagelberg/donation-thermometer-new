@@ -156,7 +156,7 @@ h1, h2, h3, h4, h5, h6 {
     position: relative; /* Added position relative */
 }
 
-/* NEW: QR Code positioning - moved outside thermometer wrapper */
+/* QR Code positioning - aligned with thermometer */
 .qr-code-container {
     display: flex;
     flex-direction: column;
@@ -168,7 +168,7 @@ h1, h2, h3, h4, h5, h6 {
     animation: pulse 2s infinite alternate;
     width: 280px;
     position: absolute; /* Changed to absolute positioning */
-    left: -100px; /* Adjusted left position to overlap */
+    left: -140px; /* Adjusted to center with thermometer */
     top: 50%; /* Center vertically */
     transform: translateY(-50%); /* Center vertically */
     z-index: 20; /* Ensure it appears above the thermometer container */
@@ -182,13 +182,7 @@ h1, h2, h3, h4, h5, h6 {
     background-color: white;
 }
 
-.scan-text {
-    margin-top: 10px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--primary-blue);
-    text-align: center;
-}
+/* Removed .scan-text styles since we're removing that element */
 
 .goal-heading {
     text-align: center;
@@ -215,7 +209,7 @@ h1, h2, h3, h4, h5, h6 {
     font-style: italic;
 }
 
-/* Modified thermometer wrapper now without QR code */
+/* Modified thermometer wrapper */
 .thermometer-wrapper {
     display: grid;
     grid-template-columns: 280px auto;
@@ -285,10 +279,11 @@ h1, h2, h3, h4, h5, h6 {
 .progress-stats {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start; /* Changed from center to flex-start to align left */
     max-width: 500px;
     align-self: center;
-    justify-self: end; /* Align to right */
+    justify-self: start; /* Changed from end to start to move left */
+    padding-left: 20px; /* Added padding to move text left */
 }
 
 .current-amount {
@@ -299,7 +294,7 @@ h1, h2, h3, h4, h5, h6 {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     margin-bottom: 0.5rem;
     animation: fadeIn 0.5s ease-in-out;
-    text-align: center;
+    text-align: left; /* Changed from center to left */
     white-space: nowrap;
 }
 
@@ -307,7 +302,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.6rem;
     color: var(--text-light);
     margin-bottom: 1.5rem;
-    text-align: center;
+    text-align: left; /* Changed from center to left */
 }
 
 /* Supporters Section */
@@ -390,7 +385,7 @@ h1, h2, h3, h4, h5, h6 {
     
     .qr-code-container {
         width: 260px;
-        left: -70px; /* Adjusted for smaller screens */
+        left: -110px; /* Adjusted for smaller screens */
     }
 }
 
@@ -414,6 +409,15 @@ h1, h2, h3, h4, h5, h6 {
     .thermometer, .progress-stats {
         justify-self: center;
         margin-bottom: 2rem;
+    }
+    
+    .progress-stats {
+        align-items: center; /* Reset to center for mobile */
+        padding-left: 0; /* Remove padding for mobile */
+    }
+    
+    .current-amount, .donor-count {
+        text-align: center; /* Reset to center for mobile */
     }
     
     .partner-logo-container {
