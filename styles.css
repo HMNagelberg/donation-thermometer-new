@@ -16,6 +16,7 @@
     --light-bg: #EAF6FF;
     --text-dark: #333;
     --text-light: #666;
+    --text-medium: #555; /* Added slightly darker text color */
     --white: #fff;
     --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     --transition: all 0.3s ease;
@@ -141,6 +142,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative; /* Added position relative */
 }
 
 /* Thermometer Container - modified for integrated layout */
@@ -151,38 +153,10 @@ h1, h2, h3, h4, h5, h6 {
     padding: 2rem;
     width: 100%;
     max-width: 1200px;
+    position: relative; /* Added position relative */
 }
 
-.goal-heading {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.goal-title {
-    font-size: 2.6rem;
-    color: var(--primary-blue);
-}
-
-.goal-title span {
-    color: var(--secondary-blue);
-}
-
-.goal-description {
-    color: var(--text-light);
-    margin-top: 0.5rem;
-    font-size: 1.3rem;
-}
-
-/* Modified thermometer wrapper to include QR code */
-.thermometer-wrapper {
-    display: grid;
-    grid-template-columns: 280px auto auto;
-    gap: 1.5rem;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-/* QR Code integrated in thermometer container */
+/* NEW: QR Code positioning - moved outside thermometer wrapper */
 .qr-code-container {
     display: flex;
     flex-direction: column;
@@ -193,7 +167,11 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     animation: pulse 2s infinite alternate;
     width: 280px;
-    justify-self: start; /* Align to left */
+    position: absolute; /* Changed to absolute positioning */
+    left: -100px; /* Adjusted left position to overlap */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Center vertically */
+    z-index: 20; /* Ensure it appears above the thermometer container */
 }
 
 .qr-code {
@@ -210,6 +188,42 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     color: var(--primary-blue);
     text-align: center;
+}
+
+.goal-heading {
+    text-align: center;
+    margin-bottom: 3rem; /* Increased space before thermometer */
+}
+
+.goal-title {
+    font-size: 2.6rem;
+    color: var(--primary-blue);
+}
+
+.goal-title span {
+    color: var(--secondary-blue);
+}
+
+/* Added italic style and darker color for description */
+.goal-description {
+    color: var(--text-medium); /* Slightly darker color */
+    margin-top: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.italic-text {
+    font-style: italic;
+}
+
+/* Modified thermometer wrapper now without QR code */
+.thermometer-wrapper {
+    display: grid;
+    grid-template-columns: 280px auto;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    /* Added left padding to make space for overlapping QR code */
+    padding-left: 140px;
 }
 
 .thermometer {
@@ -355,8 +369,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.05); }
+    0% { transform: scale(1) translateY(-50%); }
+    100% { transform: scale(1.05) translateY(-48%); }
 }
 
 .pulse {
@@ -376,26 +390,34 @@ h1, h2, h3, h4, h5, h6 {
     
     .qr-code-container {
         width: 260px;
+        left: -70px; /* Adjusted for smaller screens */
     }
 }
 
 @media (max-width: 991px) {
+    /* Reposition QR code for tablet view */
+    .qr-code-container {
+        position: relative;
+        left: 0;
+        top: 0;
+        transform: none;
+        margin: 0 auto 2rem;
+        z-index: 10;
+    }
+    
     .thermometer-wrapper {
         grid-template-columns: 1fr;
         justify-items: center;
+        padding-left: 0; /* Remove padding on smaller screens */
     }
     
-    .qr-code-container, .thermometer, .progress-stats {
+    .thermometer, .progress-stats {
         justify-self: center;
         margin-bottom: 2rem;
     }
     
     .partner-logo-container {
         gap: 2rem;
-    }
-    
-    .qr-code-container {
-        width: 260px;
     }
     
     .current-amount {
