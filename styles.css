@@ -136,16 +136,19 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 2rem;
 }
 
-/* QR Code Container */
-.qr-code-container {
+/* Main content wrapper - new class */
+.main-content-wrapper {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2rem;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
-.qr-code-left, .qr-code-right {
-    width: 325px; /* Increased by ~30% from 250px */
+/* QR Code Container - simplified */
+.qr-code-container {
     z-index: 2;
     display: flex;
     flex-direction: column;
@@ -155,15 +158,24 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     animation: pulse 2s infinite alternate;
-    margin-top: 100px;
+    width: 300px;
+    align-self: center;
 }
 
 .qr-code {
-    width: 285px; /* Increased by ~30% from 220px */
-    height: 285px; /* Increased by ~30% from 220px */
+    width: 260px;
+    height: 260px;
     border: 3px solid var(--white);
     border-radius: 8px;
     background-color: white;
+}
+
+.scan-text {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-blue);
+    text-align: center;
 }
 
 /* Thermometer Section */
@@ -175,9 +187,7 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     flex-direction: column;
     flex: 1;
-    width: 65%; /* Adjusted to balance with larger QR codes */
     max-width: 1200px;
-    margin: 0 auto;
 }
 
 .goal-heading {
@@ -203,8 +213,8 @@ h1, h2, h3, h4, h5, h6 {
 .thermometer-wrapper {
     display: flex;
     justify-content: center;
-    align-items: center; /* Changed from flex-start to center for better alignment */
-    gap: 4.5rem; /* Adjusted for better spacing */
+    align-items: center;
+    gap: 4.5rem;
     margin-bottom: 2rem;
 }
 
@@ -269,7 +279,7 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
     align-items: center;
     max-width: 500px;
-    align-self: center; /* Added for better vertical alignment */
+    align-self: center;
 }
 
 .current-amount {
@@ -327,7 +337,7 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
     gap: 4rem;
     align-items: center;
-    flex-wrap: wrap; /* Added to help with mobile responsiveness */
+    flex-wrap: wrap;
 }
 
 .partner-logo {
@@ -360,30 +370,14 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Responsive Design */
 @media (max-width: 1600px) {
-    .qr-code-container {
-        display: flex;
-        justify-content: space-around;
-        padding: 0 1rem;
-    }
-    
-    .thermometer-container {
-        width: 100%;
-        max-width: 100%;
-        margin: 0 1rem;
-    }
-    
-    .qr-code-left, .qr-code-right {
-        margin-top: 70px;
+    .main-content-wrapper {
+        max-width: 1200px;
     }
 }
 
 @media (max-width: 1200px) {
-    .thermometer-container {
-        margin: 0 1rem;
-    }
-    
-    .qr-code-left, .qr-code-right {
-        width: 280px; /* Adjusted for responsive design */
+    .main-content-wrapper {
+        max-width: 960px;
     }
     
     .qr-code {
@@ -393,6 +387,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 991px) {
+    .main-content-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+    
     .thermometer-wrapper {
         flex-direction: column;
         align-items: center;
@@ -404,31 +403,15 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .qr-code-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .qr-code-left, .qr-code-right {
-        margin: 0;
-        margin-bottom: 1rem;
-        width: 280px;
+        margin-bottom: 1.5rem;
     }
     
     .thermometer-container {
-        margin: 0;
-    }
-    
-    .qr-code-right {
-        margin-top: 1rem;
-    }
-    
-    .qr-code {
-        width: 240px;
-        height: 240px;
+        width: 100%;
     }
     
     .current-amount {
-        font-size: 2.8rem; /* Reduce font size on smaller screens */
+        font-size: 2.8rem;
     }
 }
 
@@ -464,6 +447,11 @@ h1, h2, h3, h4, h5, h6 {
     
     .thermometer {
         height: 280px;
+    }
+    
+    .qr-code-container {
+        width: 100%;
+        max-width: 300px;
     }
     
     .qr-code {
