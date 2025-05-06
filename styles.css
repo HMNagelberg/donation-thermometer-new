@@ -169,7 +169,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 280px;
     position: absolute; /* Changed to absolute positioning */
     left: -140px; /* Centered with thermometer */
-    top: 40%; /* Moved higher up - adjusted from 50% to 40% */
+    top: 35%; /* Moved higher up - adjusted from 40% to 35% */
     transform: translateY(-50%); /* Center vertically */
     z-index: 20; /* Ensure it appears above the thermometer container */
 }
