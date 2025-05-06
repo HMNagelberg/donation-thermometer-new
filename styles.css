@@ -1,5 +1,5 @@
 /* 
-   PreAct Donation Thermometer Styles - Enhanced Overlap
+   PreAct Donation Thermometer Styles - Integrated Layout
    For fundraising event display
 */
 
@@ -136,62 +136,21 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 2rem;
 }
 
-/* Main content wrapper - enhanced positioning for overlap */
+/* Main content wrapper - integrated layout */
 .main-content-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
-    position: relative;
 }
 
-/* QR Code Container with enhanced overlap */
-.qr-code-container {
-    z-index: 10; /* Higher z-index to ensure it shows in front */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-    animation: pulse 2s infinite alternate;
-    width: 280px;
-    position: absolute;
-    left: 50px; /* Adjust this value to position further right */
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.qr-code {
-    width: 240px;
-    height: 240px;
-    border: 3px solid var(--white);
-    border-radius: 8px;
-    background-color: white;
-}
-
-.scan-text {
-    margin-top: 10px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--primary-blue);
-    text-align: center;
-}
-
-/* Thermometer Section with adjusted padding for overlap */
+/* Thermometer Container - modified for integrated layout */
 .thermometer-container {
     background-color: var(--white);
     border-radius: 15px;
     box-shadow: var(--box-shadow);
-    padding: 2rem 2rem 2rem 220px; /* Increased left padding to make space for QR */
-    display: flex;
-    flex-direction: column;
+    padding: 2rem;
     width: 100%;
     max-width: 1200px;
-    margin-left: 150px; /* Push right to make room for QR */
 }
 
 .goal-heading {
@@ -214,18 +173,49 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.3rem;
 }
 
+/* Modified thermometer wrapper to include QR code */
 .thermometer-wrapper {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 280px auto auto;
+    gap: 1.5rem;
     align-items: center;
-    gap: 4.5rem;
     margin-bottom: 2rem;
+}
+
+/* QR Code integrated in thermometer container */
+.qr-code-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    animation: pulse 2s infinite alternate;
+    width: 280px;
+    justify-self: start; /* Align to left */
+}
+
+.qr-code {
+    width: 220px;
+    height: 220px;
+    border: 3px solid var(--white);
+    border-radius: 8px;
+    background-color: white;
+}
+
+.scan-text {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-blue);
+    text-align: center;
 }
 
 .thermometer {
     height: 380px;
     position: relative;
-    margin: 0 auto;
+    justify-self: center;
 }
 
 .thermometer-track {
@@ -284,6 +274,7 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     max-width: 500px;
     align-self: center;
+    justify-self: end; /* Align to right */
 }
 
 .current-amount {
@@ -373,70 +364,38 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Responsive Design */
-@media (max-width: 1400px) {
-    .main-content-wrapper {
-        max-width: 1200px;
-    }
-    
-    .thermometer-container {
-        margin-left: 120px;
-    }
-    
-    .qr-code-container {
-        left: 40px;
-    }
-}
-
 @media (max-width: 1200px) {
-    .main-content-wrapper {
-        max-width: 960px;
+    .thermometer-wrapper {
+        gap: 1rem;
     }
     
     .qr-code {
-        width: 220px;
-        height: 220px;
+        width: 200px;
+        height: 200px;
     }
     
     .qr-code-container {
         width: 260px;
-        left: 20px;
-    }
-    
-    .thermometer-container {
-        margin-left: 100px;
-        padding-left: 180px;
     }
 }
 
 @media (max-width: 991px) {
-    .main-content-wrapper {
-        flex-direction: column;
-        align-items: center;
+    .thermometer-wrapper {
+        grid-template-columns: 1fr;
+        justify-items: center;
     }
     
-    .thermometer-wrapper {
-        flex-direction: column;
-        align-items: center;
+    .qr-code-container, .thermometer, .progress-stats {
+        justify-self: center;
+        margin-bottom: 2rem;
     }
     
     .partner-logo-container {
-        flex-direction: column;
-        gap: 1.5rem;
+        gap: 2rem;
     }
     
     .qr-code-container {
-        position: static;
-        left: auto;
-        top: auto;
-        transform: none;
-        margin-bottom: 1.5rem;
-        width: 280px;
-    }
-    
-    .thermometer-container {
-        padding: 2rem;
-        margin-left: 0;
-        width: 100%;
+        width: 260px;
     }
     
     .current-amount {
@@ -479,11 +438,11 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .qr-code-container {
-        width: 260px;
+        width: 240px;
     }
     
     .qr-code {
-        width: 200px;
-        height: 200px;
+        width: 180px;
+        height: 180px;
     }
 }
