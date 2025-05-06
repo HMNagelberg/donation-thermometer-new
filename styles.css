@@ -1,6 +1,6 @@
 /* 
    PreAct Donation Thermometer Styles - Modified Version
-   For fundraising event display
+   For fundraising event display with overlapping QR code
 */
 
 * {
@@ -136,20 +136,20 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 2rem;
 }
 
-/* Main content wrapper - new class */
+/* Modified main content wrapper to allow overlapping */
 .main-content-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 30px;
     width: 100%;
     max-width: 1600px;
     margin: 0 auto;
+    position: relative;
 }
 
-/* QR Code Container - simplified */
+/* Modified QR code container to overlap */
 .qr-code-container {
-    z-index: 2;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -159,7 +159,10 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     animation: pulse 2s infinite alternate;
     width: 300px;
-    align-self: center;
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .qr-code {
@@ -178,16 +181,18 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
-/* Thermometer Section */
+/* Modified thermometer container for overlap */
 .thermometer-container {
     background-color: var(--white);
     border-radius: 15px;
     box-shadow: var(--box-shadow);
     padding: 2rem;
+    padding-left: 280px; /* Add padding to the left to make room for the QR code */
     display: flex;
     flex-direction: column;
     flex: 1;
     max-width: 1200px;
+    margin-left: 180px; /* Push thermometer to right to make space for QR */
 }
 
 .goal-heading {
@@ -384,6 +389,10 @@ h1, h2, h3, h4, h5, h6 {
         width: 240px;
         height: 240px;
     }
+    
+    .thermometer-container {
+        margin-left: 160px;
+    }
 }
 
 @media (max-width: 991px) {
@@ -403,10 +412,16 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .qr-code-container {
+        position: static;
+        left: auto;
+        top: auto;
+        transform: none;
         margin-bottom: 1.5rem;
     }
     
     .thermometer-container {
+        padding-left: 2rem;
+        margin-left: 0;
         width: 100%;
     }
     
