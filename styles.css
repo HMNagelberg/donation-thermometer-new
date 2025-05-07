@@ -78,16 +78,17 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--primary-blue);
 }
 
-/* Hero Banner */
+/* Hero Banner - Modified to position content higher */
 .hero-banner {
     background-image: linear-gradient(135deg, rgba(26, 54, 93, 0.85), rgba(32, 189, 190, 0.85));
     height: 220px;
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Changed from center to move content higher */
     justify-content: center;
     position: relative;
     overflow: hidden;
     padding: 0 2rem;
+    padding-top: 40px; /* Added top padding to position content higher */
 }
 
 .hero-banner::before {
@@ -218,18 +219,21 @@ h1, h2, h3, h4, h5, h6 {
     flex: 1;
 }
 
+/* Modified thermometer wrapper to add padding for thermometer positioning */
 .thermometer-wrapper {
     display: grid;
     grid-template-columns: 350px 1fr; /* Thermometer on left, stats on right */
     gap: 2rem;
     align-items: center;
+    padding-left: 20px; /* Added padding to move thermometer to the right */
 }
 
-/* Thermometer */
+/* Modified thermometer to add left margin */
 .thermometer {
     height: 450px;
     position: relative;
     justify-self: start; /* Align to the left */
+    margin-left: 15px; /* Added margin to move it slightly right */
 }
 
 .thermometer-track {
