@@ -10,9 +10,9 @@ const donorCountElement = document.getElementById('donor-count');
 const donorListElement = document.getElementById('donor-list');
 
 // Store previous valid values
-let lastValidTotal = 0;
-let lastValidDonorCount = 0;
-let lastValidDonorNames = [];
+let lastValidTotal = 110100; // Starting with initial value from screenshot
+let lastValidDonorCount = 3; // Starting with initial value from screenshot
+let lastValidDonorNames = ['test 1', 'test 2', 'test 3']; // Starting with initial values from screenshot
 
 // Function to fetch and process CSV data
 async function fetchDonationData() {
@@ -164,11 +164,19 @@ function updateDisplay(amount, donorCount, donorNames) {
     }
 }
 
-// Initial setup - ensure thermometer has an initial height
-thermometerProgress.style.height = '0%';
-
-// Fetch data immediately on load
-fetchDonationData();
-
-// Set up periodic refresh
-setInterval(fetchDonationData, REFRESH_INTERVAL);
+// Initial setup - pre-set thermometer to initial values
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial thermometer height
+    thermometerProgress.style.height = `${calculatePercentage(lastValidTotal)}%`;
+    
+    // Pre-populate with initial values
+    currentAmountElement.textContent = `${formatCurrency(lastValidTotal)} raised`;
+    donorCountElement.textContent = `${lastValidDonorCount} donation${lastValidDonorCount !== 1 ? 's' : ''}`;
+    donorListElement.innerHTML = lastValidDonorNames.join(', ');
+    
+    // Fetch data immediately on load
+    fetchDonationData();
+    
+    // Set up periodic refresh
+    setInterval(fetchDonationData, REFRESH_INTERVAL);
+});
