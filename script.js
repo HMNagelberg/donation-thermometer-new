@@ -1,6 +1,6 @@
 // Configuration
 const GOAL_AMOUNT = 1000000;
-const REFRESH_INTERVAL = 5000; // 5 seconds
+const REFRESH_INTERVAL = 3000; // 3 seconds
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRvwDVAwZcxpGpU9SwIfmJS19N1z_XMx8Txw0PIKFRYbbX9Vaffdm6GKyEhXwpSHUPNObHVaScBKilf/pub?gid=0&single=true&output=csv';
 
 // DOM Elements
