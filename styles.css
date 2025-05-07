@@ -225,7 +225,7 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: 350px 1fr; /* Thermometer on left, stats on right */
     gap: 2rem;
     align-items: center;
-    padding-left: 20px; /* Added padding to move thermometer to the right */
+    padding-left: 25px; /* Added padding to move thermometer to the right */
 }
 
 /* Modified thermometer to add left margin */
@@ -233,7 +233,7 @@ h1, h2, h3, h4, h5, h6 {
     height: 450px;
     position: relative;
     justify-self: start; /* Align to the left */
-    margin-left: 15px; /* Added margin to move it slightly right */
+    margin-left: 25px; /* Added margin to move it slightly right */
 }
 
 .thermometer-track {
