@@ -67,7 +67,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .preact-logo {
-    height: 100px;
+    height: 75px;
 }
 
 .header h1 {
@@ -129,7 +129,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Main Container */
 .container {
-    max-width: 1400px;
+    max-width: 1600px;
     margin: -50px auto 2rem;
     background-color: transparent;
     position: relative;
@@ -140,7 +140,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Main content wrapper */
 .main-content-wrapper {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     position: relative;
     background-color: var(--white);
