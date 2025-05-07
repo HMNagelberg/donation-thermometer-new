@@ -16,7 +16,7 @@
     --light-bg: #EAF6FF;
     --text-dark: #333;
     --text-light: #666;
-    --text-medium: #555; /* Added slightly darker text color */
+    --text-medium: #555;
     --white: #fff;
     --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     --transition: all 0.3s ease;
@@ -67,7 +67,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .preact-logo {
-    height: 100px; /* Increased size of main logo */
+    height: 100px;
 }
 
 .header h1 {
@@ -142,7 +142,10 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    position: relative; /* Added position relative */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Thermometer Container - modified for integrated layout */
@@ -153,42 +156,43 @@ h1, h2, h3, h4, h5, h6 {
     padding: 2rem;
     width: 100%;
     max-width: 1200px;
-    position: relative; /* Added position relative */
+    position: relative;
 }
 
-/* QR Code positioning - adjusted position */
+/* QR Code positioning - fixed aspect ratio and adjusted position */
 .qr-code-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 1.5rem;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    animation: pulse 2s infinite alternate;
-    width: 280px;
-    position: absolute; /* Changed to absolute positioning */
-    left: -140px; /* Centered with thermometer */
-    top: 30%; /* Moved higher up - adjusted from 35% to 30% */
-    transform: translateY(-50%); /* Center vertically */
-    z-index: 20; /* Ensure it appears above the thermometer container */
+    animation: float 3s ease-in-out infinite;
+    width: 260px; /* Fixed width */
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
 }
 
 .qr-code {
-    width: 240px;
-    height: 240px;
+    width: 220px; /* Fixed width */
+    height: 220px; /* Fixed height - maintain square aspect ratio */
     border: 3px solid var(--white);
     border-radius: 8px;
     background-color: white;
+    object-fit: contain; /* Ensure the QR code maintains its aspect ratio */
 }
 
 .goal-heading {
     text-align: center;
-    margin-bottom: 3rem; /* Increased space before thermometer */
+    margin-bottom: 3rem;
 }
 
 .goal-title {
-    font-size: 2.6rem;
+    font-size: 3.2rem; /* Increased from 2.6rem */
     color: var(--primary-blue);
 }
 
@@ -196,9 +200,8 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--secondary-blue);
 }
 
-/* Added italic style and darker color for description */
 .goal-description {
-    color: var(--text-medium); /* Slightly darker color */
+    color: var(--text-medium);
     margin-top: 0.5rem;
     font-size: 1.3rem;
 }
@@ -207,28 +210,29 @@ h1, h2, h3, h4, h5, h6 {
     font-style: italic;
 }
 
-/* Modified thermometer wrapper */
+/* Modified thermometer wrapper to be larger */
 .thermometer-wrapper {
     display: grid;
-    grid-template-columns: 280px auto;
-    gap: 1.5rem;
+    grid-template-columns: 350px auto; /* Increased from 280px */
+    gap: 2rem;
     align-items: center;
     margin-bottom: 2rem;
-    /* Added left padding to make space for overlapping QR code */
-    padding-left: 140px;
+    padding-left: 260px; /* Increased for QR code spacing */
+    padding-right: 2rem;
 }
 
+/* Increased thermometer size */
 .thermometer {
-    height: 380px;
+    height: 450px; /* Increased from 380px */
     position: relative;
     justify-self: center;
 }
 
 .thermometer-track {
-    width: 70px;
+    width: 100px; /* Increased from 70px */
     height: 100%;
     background-color: #e0f7ff;
-    border-radius: 30px;
+    border-radius: 40px; /* Increased from 30px */
     overflow: hidden;
     position: relative;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
@@ -239,16 +243,17 @@ h1, h2, h3, h4, h5, h6 {
     bottom: 0;
     width: 100%;
     background: linear-gradient(to top, var(--accent-pink), var(--secondary-blue));
-    border-radius: 30px;
+    border-radius: 40px; /* Increased from 30px */
     transition: height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.1);
     height: 12%; /* Will be updated by JavaScript */
 }
 
+/* Fixed marker alignment */
 .thermometer-markers {
     position: absolute;
     height: 100%;
-    left: 80px;
+    left: 110px; /* Increased from 80px to account for wider thermometer */
     top: 0;
     width: 170px;
 }
@@ -257,19 +262,18 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     display: flex;
     align-items: center;
-    transform: translateY(0);
 }
 
 .marker-line {
-    width: 15px;
-    height: 2px;
-    background-color: #ccc;
-    margin-right: 5px;
+    width: 20px; /* Increased from 15px */
+    height: 3px; /* Increased from 2px */
+    background-color: #aaa; /* Darker color for better visibility */
+    margin-right: 10px;
 }
 
 .marker-amount {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
+    font-size: 1.1rem; /* Increased from 1rem */
     font-weight: 600;
     color: var(--primary-blue);
 }
@@ -277,23 +281,21 @@ h1, h2, h3, h4, h5, h6 {
 .progress-stats {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Reset to center */
+    align-items: center;
     max-width: 500px;
     align-self: center;
-    justify-self: center; /* Center horizontally */
-    padding-left: 0; /* Removed padding */
-    margin-left: -40px; /* Small adjustment to slightly move left */
+    justify-self: center;
 }
 
 .current-amount {
     font-family: 'Montserrat', sans-serif;
-    font-size: 3.2rem;
+    font-size: 2.8rem; /* Decreased from 3.2rem */
     font-weight: 800;
     color: var(--accent-pink);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     margin-bottom: 0.5rem;
     animation: fadeIn 0.5s ease-in-out;
-    text-align: center; /* Reset to center */
+    text-align: center;
     white-space: nowrap;
 }
 
@@ -301,7 +303,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.6rem;
     color: var(--text-light);
     margin-bottom: 1.5rem;
-    text-align: center; /* Reset to center */
+    text-align: center;
 }
 
 /* Supporters Section */
@@ -356,25 +358,57 @@ h1, h2, h3, h4, h5, h6 {
     transform: scale(1.05);
 }
 
+/* Background decorations for visual interest */
+.background-decoration {
+    position: absolute;
+    z-index: -1;
+    opacity: 0.4;
+}
+
+.decoration-left {
+    left: 0;
+    top: 30%;
+    height: 300px;
+}
+
+.decoration-right {
+    right: 0;
+    top: 20%;
+    height: 300px;
+}
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulse {
-    0% { transform: scale(1) translateY(-50%); }
-    100% { transform: scale(1.05) translateY(-48%); }
+@keyframes float {
+    0% { transform: translateY(-50%) translateX(0); }
+    50% { transform: translateY(-48%) translateX(3px); }
+    100% { transform: translateY(-50%) translateX(0); }
 }
 
 .pulse {
     animation: pulse 1s ease-in-out;
 }
 
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .thermometer-wrapper {
+        grid-template-columns: 320px auto;
         gap: 1rem;
+        padding-left: 240px;
+    }
+    
+    .qr-code-container {
+        width: 240px;
     }
     
     .qr-code {
@@ -382,27 +416,38 @@ h1, h2, h3, h4, h5, h6 {
         height: 200px;
     }
     
-    .qr-code-container {
-        width: 260px;
-        left: -110px; /* Adjusted for smaller screens */
+    .thermometer {
+        height: 400px;
+    }
+    
+    .thermometer-track {
+        width: 90px;
+    }
+    
+    .thermometer-markers {
+        left: 100px;
     }
 }
 
 @media (max-width: 991px) {
-    /* Reposition QR code for tablet view */
+    /* Move QR code above thermometer on tablet */
     .qr-code-container {
-        position: relative;
-        left: 0;
-        top: 0;
+        position: static;
         transform: none;
         margin: 0 auto 2rem;
-        z-index: 10;
+        width: 260px;
+    }
+    
+    .qr-code {
+        width: 220px;
+        height: 220px;
     }
     
     .thermometer-wrapper {
         grid-template-columns: 1fr;
         justify-items: center;
-        padding-left: 0; /* Remove padding on smaller screens */
+        padding-left: 0;
+        padding-right: 0;
     }
     
     .thermometer, .progress-stats {
@@ -410,16 +455,12 @@ h1, h2, h3, h4, h5, h6 {
         margin-bottom: 2rem;
     }
     
-    .progress-stats {
-        margin-left: 0; /* Remove margin for mobile */
-    }
-    
-    .partner-logo-container {
-        gap: 2rem;
-    }
-    
-    .current-amount {
+    .goal-title {
         font-size: 2.8rem;
+    }
+    
+    .background-decoration {
+        display: none;
     }
 }
 
@@ -449,20 +490,23 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 1.2rem;
     }
     
+    .goal-title {
+        font-size: 2.4rem;
+    }
+    
     .current-amount {
         font-size: 2.2rem;
     }
     
     .thermometer {
-        height: 280px;
+        height: 320px;
     }
     
-    .qr-code-container {
-        width: 240px;
+    .thermometer-track {
+        width: 70px;
     }
     
-    .qr-code {
-        width: 180px;
-        height: 180px;
+    .thermometer-markers {
+        left: 80px;
     }
 }
